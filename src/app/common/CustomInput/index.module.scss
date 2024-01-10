@@ -1,0 +1,28 @@
+@import "../../_variables";
+
+.group {
+  display: flex;
+  flex-direction: column;
+}
+
+.label {
+  overflow: hidden;
+  color: $neutral-color-gray-strongest;
+  text-overflow: ellipsis;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 24px;
+}
+
+.input {
+  padding: 8px;
+  font-size: $font-size-xs;
+  border-radius: 8px;
+  border: 1px solid $neutral-color-gray-strongest;
+  background: $neutral-color-gray-softest;
+}
+
+.input::placeholder {
+    color: $neutral-color-gray-medium;
+}
