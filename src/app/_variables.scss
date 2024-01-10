@@ -1,11 +1,16 @@
 // COLORS
-$brandcolor-primary-darkest: #575BEA;
-$brandcolor-primary-dark: #4263D0;
-$brandcolor-primary-medium: #2784FF;
-$brandcolor-primary-light: #90C2F3;
+$brand-color-primary-dark-active: #2b2e73;
+$brand-color-primary-darkest: #3A3E99;
+$brand-color-primary-dark: #575BEA;
+$brand-color-primary-medium: #2784FF;
+$brand-color-primary-light: #90C2F3;
+
+$neutral-color-dark-strongest: #091E42;
+$neutral-color-dark-strong: #344449;
+$neutral-color-dark-medium: #42526E;
 
 $neutral-color-gray-strongest: #718797;
-$neutral-color-grat-strong: #99B9D1;
+$neutral-color-gray-strong: #99B9D1;
 $neutral-color-gray-medium: #B6C7D4;
 $neutral-color-gray-light: #E8EBF4;
 $neutral-color-gray-soft: #F1F2F6;
@@ -24,3 +29,11 @@ $font-size-xl: 24px;
 $font-size-xxl: 32px;
 $font-size-xxxl: 40px;
 $font-size-display: 64px;
+
+// FONT WIGHT
+$font-weight-thin: 200;
+$font-weight-light: 300;
+$font-weight-regular: 400;
+$font-weight-medium: 500;
+$font-weight-semibold: 600;
+$font-weight-bold: 700;

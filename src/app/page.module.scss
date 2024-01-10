@@ -1,61 +1,113 @@
-
-@import './_variables';
+@import "./_variables";
 
 .main {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .centerInfo {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .login {
-    width: 50%;
-    height: 100vh;  
+  width: 50%;
+  height: 100vh;
 
-    .loginForm {
-        width: 40%;
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        gap: 16px;
+  .loginForm {
+    width: 40%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+  }
+
+  .loginTitle {
+    color: $neutral-color-dark-strongest;
+    font-weight: $font-weight-medium;
+    font-size: $font-size-xl;
+  }
+
+  .formImage {
+    width: 123px;
+    height: 119px;
+    border-radius: 24px;
+    box-shadow: -20px 40px 100px 0px #585c620a;
+    box-shadow: -15px 40px 100px 0px #4200ff14;
+  }
+
+  .options {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .link {
+    text-decoration: none;
+    &:visited {
+      text-decoration: none;
     }
+    &:hover {
+      text-decoration: none;
+    }
+    &:active {
+      text-decoration: none;
+    }
+    cursor: pointer;
+    color: $brand-color-primary-dark;
+
+    &:hover {
+      color: $brand-color-primary-darkest;
+    }
+
+    &:active {
+      color: $brand-color-primary-dark-active;
+    }
+  }
 }
 
 .banner {
-    width: 50%;
-    height: 100vh;
-    background-color: $brandcolor-primary-dark;
-    flex-direction: column;
-    gap: 40px;
+  width: 50%;
+  height: 100vh;
+  background-color: $brand-color-primary-dark;
+  flex-direction: column;
+  gap: 40px;
 
-    .bannerText {
-        font-size: $font-size-xl;
-        color: $neutral-color-gray-softest;
+  .bannerText {
+    font-size: $font-size-xl;
+    color: $neutral-color-gray-softest;
+  }
+
+  .biggerCircle {
+    width: 580px;
+    height: 580px;
+    padding: 10px;
+    border-radius: 580px;
+    background: linear-gradient(
+      198deg,
+      rgba(255, 255, 255, 0.4) 12.51%,
+      rgba(255, 255, 255, 0) 88.73%
+    );
+
+    .smallerCircle {
+      position: absolute;
+      width: 489px;
+      height: 489px;
+      border-radius: 489px;
+      background: linear-gradient(
+        198deg,
+        rgba(255, 255, 255, 0.4) 12.51%,
+        rgba(255, 255, 255, 0) 88.73%
+      );
+
+      .image {
+        position: relative;
+      }
     }
-
-    .biggerCircle {
-        width: 580px;
-        height: 580px;
-        padding: 10px;
-        border-radius: 580px;
-        background: linear-gradient(198deg, rgba(255, 255, 255, 0.40) 12.51%, rgba(255, 255, 255, 0.00) 88.73%);
-
-        .smallerCircle {
-            position: absolute;
-            width: 489px;
-            height: 489px;
-            border-radius: 489px;
-            background: linear-gradient(198deg, rgba(255, 255, 255, 0.40) 12.51%, rgba(255, 255, 255, 0.00) 88.73%);
-
-            .image {
-                position: relative;
-            }
-        }
-    }
+  }
 }

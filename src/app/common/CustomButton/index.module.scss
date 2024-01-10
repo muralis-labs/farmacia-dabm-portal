@@ -1,0 +1,24 @@
+@import "../../_variables";
+
+.customButton {
+  width: 100%;
+  height: 56px;
+  border-color: $brand-color-primary-dark;
+  background-color: $brand-color-primary-dark;
+
+  &:hover {
+    border-color: $brand-color-primary-darkest;
+    background-color: $brand-color-primary-darkest;
+  }
+
+  &:active {
+    border-color: $brand-color-primary-dark-active;
+    background-color: $brand-color-primary-dark-active;
+  }
+
+  &:disabled {
+    color: $neutral-color-gray-strong;
+    border-color: $neutral-color-gray-soft;
+    background-color: $neutral-color-gray-soft !important;
+  }
+}
