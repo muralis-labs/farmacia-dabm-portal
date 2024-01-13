@@ -1,0 +1,38 @@
+@import "@/app/sass/variables.scss";
+
+.options {
+  width: 100%;
+  max-height: 180px;
+  background: $neutral-color-gray-softest;
+  border-radius: 8px;
+  overflow-y: auto;
+  color: $neutral-color-dark-strong;
+  border: 1px solid $neutral-color-gray-medium;
+  position: absolute;
+}
+
+.autocompleteContainer {
+  position: relative;
+}
+
+.noItems {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 16px;
+}
+
+.item {
+  padding: 8px;
+  &:hover {
+    background: $neutral-color-gray-medium;
+    cursor: pointer;
+  }
+
+  &.newItem {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: $font-weight-medium;
+  }
+}

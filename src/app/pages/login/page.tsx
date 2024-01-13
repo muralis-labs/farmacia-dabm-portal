@@ -2,13 +2,13 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import styles from "./page.module.scss";
-import banner from "./assets/ilustracao.png";
-import logo from "./assets/farma_logo.png";
-import CustomInput from "./common/CustomInput/index";
-import CustomButton from "./common/CustomButton/index";
-import CustomCheckbox from "./common/CustomCheckbox/index";
-import { useHandleLogin } from "./hooks/useHandleLogin";
+import banner from "@/app/assets/ilustracao.png";
+import logo from "@/app/assets/farma_logo.png";
 import { useDeviceSelectors } from "react-device-detect";
+import { useHandleLogin } from "@/app/hooks/useHandleLogin";
+import CustomInput from "@/app/common/CustomInput/index";
+import CustomButton from "@/app/common/CustomButton/index";
+import CustomCheckbox from "@/app/common/CustomCheckbox/index";
 
 export default function Home() {
   const [login, setLogin] = useState("");
@@ -47,8 +47,8 @@ export default function Home() {
         <div className={styles.bubbleTop} />
         <div className={styles.bubbleBottom} />
       </>
-    )
-  }
+    );
+  };
 
   return (
     <main className={`${styles.main} ${isMobile ? styles.mainMobile : ""}`}>
@@ -62,12 +62,14 @@ export default function Home() {
           <Image className={styles.formImage} src={logo} alt="form Logo" />
           <span className={styles.loginTitle}>Faça login na conta</span>
           <CustomInput
+            id="user"
             value={login}
             onChange={(event) => setLogin(event.target.value)}
             label="Usuário"
             placeholder="usuario@email.com"
           />
           <CustomInput
+            id="password"
             value={password}
             onChange={(event) => setPassword(event.target.value)}
             label="Senha"
@@ -78,6 +80,7 @@ export default function Home() {
             disabled={isLoading || login.length <= 0 || password.length <= 0}
             onClick={handleLoginClient}
             label="Login"
+            largeButton
           />
           <div
             className={` ${styles.options} ${isMobile ? styles.mobile : ""}`}

@@ -21,7 +21,7 @@ export const useHandleLogin = <T>() => {
 
       if (res.data) {
         localStorage.setItem(`user_${environment}`, JSON.stringify(res.data));
-        push('/pages');
+        push('/pages/entry');
       }
 
     } catch (error: any) {

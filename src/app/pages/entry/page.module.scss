@@ -1,0 +1,41 @@
+@import "@/app/sass/variables";
+
+.entry {.col {
+  display: flex;
+  flex-direction: column-reverse;
+}}
+
+.entryContainer {
+  padding: 16px;
+  border-radius: 24px;
+  border: 1px solid $neutral-color-gray-medium;
+}
+
+.flexColDirection {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.title {
+  color: $brand-color-primary-medium;
+  font-weight: $font-weight-medium;
+  font-size: $font-size-md;
+}
+
+.divider {
+  height: 1px;
+  width: 100%;
+  margin-bottom: 24px;
+  background: linear-gradient(
+    90deg,
+    rgba(182, 199, 212, 0) 0%,
+    #b6c7d4 49.52%,
+    rgba(182, 199, 212, 0.15625) 99.04%
+  );
+}
+
+.topInfo {
+  display: flex;
+  flex-direction: column;
+}

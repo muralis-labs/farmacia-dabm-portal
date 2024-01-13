@@ -6,14 +6,16 @@ type CustomButtonProps = {
   label: string;
   disabled?: boolean;
   onClick?: (e: any) => void;
+  largeButton?: boolean,
 }
 
 export default function CustomButton({
   label,
   disabled = false,
   onClick = () => {},
+  largeButton = false,
 }: CustomButtonProps) {
   return (
-    <Button disabled={disabled} onClick={onClick} className={styles.customButton} as="input" type="button" value={label} />
+    <Button disabled={disabled} onClick={onClick} className={`${styles.customButton} ${largeButton ? styles.largeButton : {}}`} as="input" type="button" value={label} />
   );
 }
