@@ -1,13 +1,17 @@
 @import "@/app/sass/variables.scss";
 
 .customButton {
-  width: 100%;
+  width: 280px;
   height: 40px;
   border-color: $brand-color-primary-dark;
   background-color: $brand-color-primary-dark;
 
   &.largeButton {
     height: 56px !important;
+  }
+
+  &.fullWidth {
+    width: 100% !important;
   }
 
   &:hover {

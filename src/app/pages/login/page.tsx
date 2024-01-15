@@ -13,7 +13,7 @@ import CustomCheckbox from "@/app/common/CustomCheckbox/index";
 export default function Home() {
   const [login, setLogin] = useState("");
   const [password, setPassword] = useState("");
-  const { data, isLoading, error, fetchData } = useHandleLogin();
+  const { isLoading, error, fetchData } = useHandleLogin();
   const [selectors] = useDeviceSelectors(window.navigator.userAgent);
 
   const { isMobile } = selectors;
@@ -77,6 +77,7 @@ export default function Home() {
             placeholder="******"
           />
           <CustomButton
+            fullWidth
             disabled={isLoading || login.length <= 0 || password.length <= 0}
             onClick={handleLoginClient}
             label="Login"

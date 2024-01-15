@@ -13,6 +13,7 @@ type CustomDatePickerProps = {
   onChange?: (e: any) => void;
   value?: Date;
   id: string;
+  disabled?: boolean;
 };
 
 type DatePickerInput = {
@@ -25,6 +26,7 @@ export default function CustomDatePicker({
   onChange = () => {},
   value,
   id,
+  disabled = false,
 }: CustomDatePickerProps) {
   const formatDate = (date: Date) => {
     return moment(date).format("DD/MM/YYYY");
@@ -32,12 +34,13 @@ export default function CustomDatePicker({
   const DatePickerInput = ({ onClick }: DatePickerInput) => {
     return (
       <CustomInput
+        disabled={disabled}
         id={id}
         readOnly
         label={label}
         onClick={onClick}
         placeholder={placeholder}
-        value={value ? formatDate(value) : ''}
+        value={value ? formatDate(value) : ""}
         showIcon
         icon="calendar"
       />
@@ -45,7 +48,7 @@ export default function CustomDatePicker({
   };
   return (
     <DatePicker
-    wrapperClassName={styles.datePicker}
+      wrapperClassName={styles.datePicker}
       selected={value}
       onChange={onChange}
       locale={ptBR}

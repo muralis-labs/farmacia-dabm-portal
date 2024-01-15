@@ -7,30 +7,37 @@ type CustomAutoCompleteProps = {
   items: any[];
   onItemSelect?: (e: any) => void;
   handleNewItem?: (e: any) => void;
-  value?: any;
+  field: string;
   label?: string;
   placeholder?: string;
   id: string;
+  disabled?: boolean;
+  value: string;
 };
 
 export default function CustomAutoComplete({
   items = [{}],
   onItemSelect = () => {},
   handleNewItem = () => {},
-  value,
+  field,
   label,
   placeholder,
   id,
+  disabled = false,
+  value
 }: CustomAutoCompleteProps) {
   const [showOptions, setShowOptions] = useState<boolean>(false);
   const [showCreateButton, setShowCreateButton] = useState<boolean>(false);
   const [filterItems, setFilterItems] = useState<any[]>(items);
-  const [search, setSearch] = useState<string>("");
+  const [search, setSearch] = useState<string>(value);
+  const [key, setKey] = useState(Math.random());
   const containerRef = useRef<any>(null);
 
   const handleItemClick = (item: any) => {
-    onItemSelect(item);
+    setSearch(item[field]);
     setShowOptions(false);
+    setKey(Math.random());
+    onItemSelect(item);
   };
 
   const handleClickOutside = (event: MouseEvent) => {
@@ -39,6 +46,12 @@ export default function CustomAutoComplete({
     }
   };
 
+  const clickNew = () => {
+    handleNewItem({ name: search })
+    setShowOptions(false);
+    setKey(Math.random());
+  }
+
   const renderItems = (item: any) => {
     return (
       <div
@@ -46,20 +59,20 @@ export default function CustomAutoComplete({
         className={styles.item}
         onClick={() => handleItemClick(item)}
       >
-        {item.name}
+        {item[field]}
       </div>
     );
   };
 
   useEffect(() => {
     setTimeout(() => {
-      const filter = items.filter((item) =>
-        item.name.toLocaleLowerCase().includes(search.toLocaleLowerCase())
+      const filter = items?.filter((item) =>
+        item[field]?.toLocaleLowerCase().includes(search?.toLocaleLowerCase())
       );
       setFilterItems(filter as any);
       setShowCreateButton(search.length >= 1);
     }, 300);
-  }, [search, items]);
+  }, [search, items, field]);
 
   useEffect(() => {
     document.addEventListener("click", handleClickOutside);
@@ -68,6 +81,11 @@ export default function CustomAutoComplete({
     };
   }, []);
 
+
+  useEffect(() => {
+    setSearch(value)
+  }, [value]);
+
   return (
     <div
       className={styles.autocompleteContainer}
@@ -75,7 +93,8 @@ export default function CustomAutoComplete({
       ref={containerRef}
     >
       <CustomInput
-        value={value?.name ?? undefined}
+        disabled={disabled}
+        value={search ?? undefined}
         onChange={(event) => setSearch(event.target.value)}
         id={id}
         label={label}
@@ -86,8 +105,8 @@ export default function CustomAutoComplete({
       />
 
       {showOptions && (
-        <div className={styles.options}>
-          {filterItems.length <= 0 ? (
+        <div key={key} className={styles.options}>
+          {!filterItems || filterItems.length <= 0 ? (
             <span className={styles.noItems}>Nenhum item foi encontrado</span>
           ) : (
             filterItems.map((item) => renderItems(item))
@@ -95,7 +114,7 @@ export default function CustomAutoComplete({
           {showCreateButton && (
             <div
               className={`${styles.item} ${styles.newItem}`}
-              onClick={() => handleNewItem({ name: search })}
+              onClick={clickNew}
             >
               Criar novo
             </div>

@@ -9,6 +9,7 @@
   color: $neutral-color-dark-strong;
   border: 1px solid $neutral-color-gray-medium;
   position: absolute;
+  z-index: 1;
 }
 
 .autocompleteContainer {

@@ -11,7 +11,6 @@ type loginProps = {
 
 export const useHandleLogin = <T>() => {
   const [isLoading, setIsLoading] = useState(false);
-  const [data, setData] = useState<T | null>(null);
   const [error, setError] = useState<Error | null>(null);
   const { push } = useRouter();
   const fetchData = async (data: loginProps) => {
@@ -30,5 +29,5 @@ export const useHandleLogin = <T>() => {
     setIsLoading(false);
   };
 
-  return { data, isLoading, error, fetchData };
+  return { isLoading, error, fetchData };
 };

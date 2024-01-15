@@ -1,0 +1,89 @@
+@import "@/app/sass/variables.scss";
+
+.table {
+  width: 100%;
+
+  .row {
+    height: 40px;
+
+    th,
+    td {
+      padding-top: 8px;
+      padding-bottom: 8px;
+
+      &:first-child {
+        padding-left: 24px;
+      }
+
+      &:last-child {
+        padding-right: 24px;
+      }
+    }
+  }
+
+  .info {
+    font-size: $font-size-xxs;
+    font-weight: $font-weight-regular;
+    line-height: 12px;
+    letter-spacing: 0em;
+    text-align: left;
+
+    &:nth-child(even) {
+      td {
+        background-color: $variant-color-purple-light;
+      }
+    }
+
+    &:last-child {
+      td {
+        &:first-child {
+          border-radius: 0 0 0px 8px;
+        }
+
+        &:last-child {
+          border-radius: 0 0 8px 0px;
+        }
+      }
+    }
+  }
+
+  .headers {
+    color: $neutral-color-gray-softest;
+
+    th {
+      background-color: $variant-color-purple-dark;
+      font-size: $font-size-xs;
+      font-weight: $font-weight-medium;
+      line-height: 24px;
+      letter-spacing: 0em;
+      text-align: left;
+
+      &:first-child {
+        border-radius: 8px 0 0px 0 !important;
+      }
+
+      &:last-child {
+        border-radius: 0 8px 0 0px !important;
+      }
+    }
+  }
+
+  .options {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    
+    .option {
+      width: 24px;
+      height: 24px;
+      padding: 5px;
+      border-radius: 4px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: $neutral-color-gray-light;
+      cursor: pointer;
+    }
+  }
+ 
+}
