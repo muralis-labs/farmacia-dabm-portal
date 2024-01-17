@@ -34,9 +34,7 @@ export default function Entry() {
   const [code, setCode] = useState("");
   const [commercialName, setCommercialName] = useState("");
   const [genericName, setGenericName] = useState("");
-  const [expiration, setExpiration] = useState<
-    string | Date | undefined
-  >();
+  const [expiration, setExpiration] = useState<string | Date | undefined>();
   const [unitOfMeasurement, setUnitOfMeasurement] = useState("");
   const [shelf, setShelf] = useState("");
   const [medicineId, setMedicineId] = useState(null);
@@ -140,7 +138,7 @@ export default function Entry() {
     setCommercialName("");
     setUnitOfMeasurement("");
     setDosage(undefined);
-  }
+  };
 
   const clearFields = () => {
     setCode("");
@@ -183,6 +181,27 @@ export default function Entry() {
     uploadMedicinesFetchData(medicinesList);
   };
 
+  const handleUploadAllMedicinesMobile = async () => {
+    const data = [
+      {
+        code,
+        commercialName,
+        genericName,
+        expiration,
+        unitOfMeasurement,
+        shelf,
+        medicineId,
+        shelfId,
+        dosage,
+        pharmaceutical,
+        batch,
+        quantity,
+        entry: new Date(),
+      },
+    ];
+    uploadMedicinesFetchData(data);
+  };
+
   useEffect(() => {
     const getData = async () => {
       const data = await getMedicineData({ code });
@@ -203,7 +222,7 @@ export default function Entry() {
     };
 
     let timer = setTimeout(() => {
-      if (code) getData();
+      getData();
     }, 700);
 
     return () => clearTimeout(timer);
@@ -375,8 +394,8 @@ export default function Entry() {
       {isMobile && (
         <div className={styles.mobileOptions}>
           <CustomButton
-            onClick={handleUploadAllMedicines}
-            disabled={medicinesList.length <= 0 || uploadMedicinesLoading}
+            onClick={handleUploadAllMedicinesMobile}
+            disabled={isDisabled() || uploadMedicinesLoading}
             largeButton
             label="Registrar entrada"
           />

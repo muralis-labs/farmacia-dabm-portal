@@ -58,3 +58,48 @@
     }
   }
 }
+
+.listContainer {
+  padding: 8px 22px;
+  height: 100vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+
+  .card {
+    width: 100%;
+    padding: 16px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    background-color: $neutral-color-gray-softest;
+    border: 1px solid $neutral-color-gray-medium;
+
+    .cardRow {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+
+      .name {
+        width: 50%;
+        font-size: $font-size-xs;
+        font-weight: $font-weight-regular;
+        line-height: 24px;
+        letter-spacing: 0em;
+        text-align: left;
+        color: $neutral-color-gray-medium;
+      }
+
+      .info {
+        font-size: $font-size-xs;
+        font-weight: $font-weight-regular;
+        line-height: 24px;
+        letter-spacing: 0em;
+        text-align: left;
+        color: $neutral-color-dark-strongest;
+      }
+    }
+  }
+}

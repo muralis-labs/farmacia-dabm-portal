@@ -41,8 +41,7 @@ export default function CustomDataTable({
   );
 
   const validateCellType = (cell: any) => {
-    const regex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/;
-    return regex.test(cell);
+    return moment(cell, true).isValid();
   };
 
   const getItemContent = (header: header, item: any) => {
@@ -51,16 +50,19 @@ export default function CustomDataTable({
   const renderTableRow = (item: any, index: number) => {
     return (
       <tr className={`${styles.row} ${styles.info}`} key={item.id}>
-        <td className={styles.selection}>
-          <CustomCheckbox
-            key={`checkbox_${index}`}
-            id={`${index}`}
-            checked={selectionList.includes(item)}
-            onChange={() => onSelectRow(item)}
-          />
-        </td>
+        {selection && (
+          <td className={styles.selection}>
+            <CustomCheckbox
+              key={`checkbox_${index}`}
+              id={`${index}`}
+              checked={selectionList.includes(item)}
+              onChange={() => onSelectRow(item)}
+            />
+          </td>
+        )}
         {headers.map((header) => (
           <td key={header.field}>
+            {console.log(header.field)}
             {validateCellType(getItemContent(header, item))
               ? moment(getItemContent(header, item)).format("DD/MM/YYYY")
               : getItemContent(header, item)}

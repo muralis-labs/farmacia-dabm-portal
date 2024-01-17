@@ -10,6 +10,7 @@ import Icon from "@/app/common/icon/index";
 import CustomDatePickerRange from "@/app/common/CustomDatePickerRange/index";
 import CustomButton from "@/app/common/CustomButton/index";
 import moment from "moment";
+import { useDeviceSelectors } from "react-device-detect";
 
 export default function Page() {
   const getStockListService = useHandleGetStockList();
@@ -19,6 +20,10 @@ export default function Page() {
     isLoading: stockListLoading,
   } = getStockListService;
 
+  const [selectors] = useDeviceSelectors(window.navigator.userAgent);
+  const { isMobile } = selectors;
+
+  const [limit, setLimit] = useState(10);
   const [showFilters, setShowFilters] = useState(false);
   const [selectedPage, setSelectedPage] = useState(1);
   const [search, setSearch] = useState("");
@@ -36,19 +41,19 @@ export default function Page() {
   const headers = [
     {
       title: "N. Genérico",
-      field: "medicine.genericName",
+      field: "generic_name",
     },
     {
       title: "N. Comercial",
-      field: "medicine.commercialName",
+      field: "commercial_name",
     },
     {
       title: "Prateleira",
-      field: "shelf.name",
+      field: "name",
     },
     {
       title: "Cód Barras",
-      field: "medicine.code",
+      field: "code",
     },
     {
       title: "Lote",
@@ -119,7 +124,9 @@ export default function Page() {
       end: moment(endEntryDate).subtract(1, "days").format("YYYY-MM-DD"),
     };
     const expirationDate = {
-      start: moment(startExpirationDate).subtract(1, "days").format("YYYY-MM-DD"),
+      start: moment(startExpirationDate)
+        .subtract(1, "days")
+        .format("YYYY-MM-DD"),
       end: moment(endExpirationDate).subtract(1, "days").format("YYYY-MM-DD"),
     };
     const filter = {
@@ -134,6 +141,56 @@ export default function Page() {
     };
     getStockList(filter as any);
     setShowFilters(false);
+  };
+
+  const renderMobileCard = (item) => {
+    return (
+      <div className={styles.card}>
+        <div className={styles.cardRow}>
+          <span className={styles.name}>Nome Comercial: </span>
+          <span className={styles.info}>{item["commercial_name"] ?? ""}</span>
+        </div>
+        <div className={styles.cardRow}>
+          <span className={styles.name}>Nome Genérico: </span>
+          <span className={styles.info}>{item["generic_name"] ?? ""}</span>
+        </div>
+        <div className={styles.cardRow}>
+          <span className={styles.name}>Prateleira: </span>
+          <span className={styles.info}>{item["name"] ?? ""}</span>
+        </div>
+        <div className={styles.cardRow}>
+          <span className={styles.name}>Código: </span>
+          <span className={styles.info}>{item["code"] ?? ""}</span>
+        </div>
+        <div className={styles.cardRow}>
+          <span className={styles.name}>Lote: </span>
+          <span className={styles.info}>{item["number"] ?? ""}</span>
+        </div>
+        <div className={styles.cardRow}>
+          <span className={styles.name}>Validade: </span>
+          <span className={styles.info}>
+            {moment(item.expiration).format("DD/MM/YYYY") ?? ""}
+          </span>
+        </div>
+        <div className={styles.cardRow}>
+          <span className={styles.name}>Quantidade: </span>
+          <span className={styles.info}>{item.quantity ?? ""}</span>
+        </div>
+      </div>
+    );
+  };
+
+  const handleScroll = (e) => {
+    const next = selectedPage + 1;
+
+    const bottom =
+      e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
+
+    if (bottom && isMobile && limit < stockList.total) {
+      getStockList({limit: limit + 5, page: 1});
+      setLimit(limit + 5);
+    }
+
   };
 
   useEffect(() => {
@@ -152,124 +209,138 @@ export default function Page() {
   }, [search]);
 
   return (
-    <div>
-      <div className={styles.filters}>
-        <CustomInput
-          id="search"
-          placeholder="Buscar"
-          value={search}
-          onChange={(event) => setSearch(event.target.value)}
-          search
-          showIcon
-          icon="lupe"
-          iconSize={18}
-          iconColor={colors.neutralColorGrayStrong}
-        />
-
-        <div className={styles.filterButton}>
-          <div
-            className={styles.icon}
-            onClick={() => setShowFilters(!showFilters)}
-          >
-            <Icon
-              icon="funil"
-              color={colors.neutralColorGraySoftest}
-              size={12}
+    <>
+      {!isMobile ? (
+        <div>
+          <div className={styles.filters}>
+            <CustomInput
+              id="search"
+              placeholder="Buscar"
+              value={search}
+              onChange={(event) => setSearch(event.target.value)}
+              search
+              showIcon
+              icon="lupe"
+              iconSize={18}
+              iconColor={colors.neutralColorGrayStrong}
             />
-          </div>
 
-          {showFilters && (
-            <div className={styles.filterForm}>
-              <div className={styles.filterText}>
-                <h2>Filtros</h2>
-                <h3 onClick={clearFilters}>Limpar tudo</h3>
+            <div className={styles.filterButton}>
+              <div
+                className={styles.icon}
+                onClick={() => setShowFilters(!showFilters)}
+              >
+                <Icon
+                  icon="funil"
+                  color={colors.neutralColorGraySoftest}
+                  size={12}
+                />
               </div>
-              <CustomDatePickerRange
-                id="entryDate"
-                label="Data de atendimento"
-                onChange={onChangeEntryDate}
-                startDate={startEntryDate as any}
-                endDate={endEntryDate as any}
+
+              {showFilters && (
+                <div className={styles.filterForm}>
+                  <div className={styles.filterText}>
+                    <h2>Filtros</h2>
+                    <h3 onClick={clearFilters}>Limpar tudo</h3>
+                  </div>
+                  <CustomDatePickerRange
+                    id="entryDate"
+                    label="Data de atendimento"
+                    onChange={onChangeEntryDate}
+                    startDate={startEntryDate as any}
+                    endDate={endEntryDate as any}
+                  />
+                  <CustomInput
+                    id="searchGenericName"
+                    placeholder="Buscar nome genérico"
+                    label="Nome genérico"
+                    onChange={(event) =>
+                      setSearchGenericName(event.target.value)
+                    }
+                    value={searchGenericName}
+                    showIcon
+                    icon="lupe"
+                    iconSize={15}
+                    iconColor={colors.neutralColorGrayStrong}
+                  />
+                  <CustomInput
+                    id="searchCommercialName"
+                    placeholder="Buscar Nome comercial"
+                    label="Nome comercial"
+                    onChange={(event) =>
+                      setSearchCommercialName(event.target.value)
+                    }
+                    value={searchCommercialName}
+                    showIcon
+                    icon="lupe"
+                    iconSize={15}
+                    iconColor={colors.neutralColorGrayStrong}
+                  />
+                  <CustomInput
+                    id="searchPharmaceutical"
+                    placeholder="Buscar farmacêutico"
+                    label="Farmacêutico"
+                    onChange={(event) =>
+                      setSearchPharmaceutical(event.target.value)
+                    }
+                    value={searchPharmaceutical}
+                    showIcon
+                    icon="lupe"
+                    iconSize={15}
+                    iconColor={colors.neutralColorGrayStrong}
+                  />
+                  <CustomDatePickerRange
+                    id="expirationDate"
+                    label="Data de validade"
+                    onChange={onChangeExpirationDate}
+                    startDate={startExpirationDate as any}
+                    endDate={endExpirationDate as any}
+                  />
+                  <CustomButton
+                    onClick={getStockListWithFilters}
+                    label="Aplicar"
+                    fullWidth
+                  />
+                </div>
+              )}
+            </div>
+
+            <div className={styles.icon}>
+              <Icon
+                icon="download"
+                color={colors.neutralColorGraySoftest}
+                size={12}
               />
-              <CustomInput
-                id="searchGenericName"
-                placeholder="Buscar nome genérico"
-                label="Nome genérico"
-                onChange={(event) => setSearchGenericName(event.target.value)}
-                value={searchGenericName}
-                showIcon
-                icon="lupe"
-                iconSize={15}
-                iconColor={colors.neutralColorGrayStrong}
-              />
-              <CustomInput
-                id="searchCommercialName"
-                placeholder="Buscar Nome comercial"
-                label="Nome comercial"
-                onChange={(event) =>
-                  setSearchCommercialName(event.target.value)
-                }
-                value={searchCommercialName}
-                showIcon
-                icon="lupe"
-                iconSize={15}
-                iconColor={colors.neutralColorGrayStrong}
-              />
-              <CustomInput
-                id="searchPharmaceutical"
-                placeholder="Buscar farmacêutico"
-                label="Farmacêutico"
-                onChange={(event) =>
-                  setSearchPharmaceutical(event.target.value)
-                }
-                value={searchPharmaceutical}
-                showIcon
-                icon="lupe"
-                iconSize={15}
-                iconColor={colors.neutralColorGrayStrong}
-              />
-              <CustomDatePickerRange
-                id="expirationDate"
-                label="Data de validade"
-                onChange={onChangeExpirationDate}
-                startDate={startExpirationDate as any}
-                endDate={endExpirationDate as any}
-              />
-              <CustomButton
-                onClick={getStockListWithFilters}
-                label="Aplicar"
-                fullWidth
-              />
+            </div>
+          </div>
+          <CustomDataTable
+            key={key}
+            selection
+            onSelectRow={handleSelectRow}
+            onSelectAllRows={handleSelectAllRows}
+            selectionList={selectedRows}
+            headers={headers}
+            rows={stockList ? (stockList.data as any[]) : []}
+            isLoading={stockListLoading}
+          />
+          {!stockListLoading && stockList.data && (
+            <Pagination
+              onSelectPage={handleChangePage}
+              limit={10}
+              total={stockList.total}
+              selectedPage={selectedPage}
+            />
+          )}
+        </div>
+      ) : (
+        <div>
+          {stockList.data && stockList.data.length > 0 && (
+            <div onScroll={handleScroll} className={styles.listContainer}>
+              {stockList.data.map((item) => renderMobileCard(item))}
             </div>
           )}
         </div>
-
-        <div className={styles.icon}>
-          <Icon
-            icon="download"
-            color={colors.neutralColorGraySoftest}
-            size={12}
-          />
-        </div>
-      </div>
-      <CustomDataTable
-      key={key}
-        selection
-        onSelectRow={handleSelectRow}
-        onSelectAllRows={handleSelectAllRows}
-        selectionList={selectedRows}
-        headers={headers}
-        rows={stockList ? (stockList.data as any[]) : []}
-        isLoading={stockListLoading}
-      />
-      {!stockListLoading && stockList.data && (
-        <Pagination
-          onSelectPage={handleChangePage}
-          limit={10}
-          total={stockList.total}
-          selectedPage={selectedPage}
-        />
       )}
-    </div>
+    </>
   );
 }

@@ -1,0 +1,41 @@
+@import "@/app/sass/variables.scss";
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  height: 72px;
+  padding: 24px 16px;
+  align-items: center;
+  margin-bottom: 8px;
+
+  .title {
+    font-size: $font-size-xxl;
+    font-weight: $font-weight-medium;
+    color: $neutral-color-dark-medium;
+    line-height: 48px;
+    letter-spacing: 0em;
+    text-align: left;
+  }
+
+  .user {
+    display: flex;
+    align-items: center;
+    padding: 8px 16px;
+    gap: 8px;
+    border: 1px solid $neutral-color-gray-light;
+    border-radius: 16px;
+    font-size: $font-size-xxs;
+    font-weight: $font-weight-regular;
+    line-height: 12px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: $neutral-color-gray-strongest;
+
+    .formImage {
+      height: 32px;
+      width: 32px;
+      border-radius: 50%;
+      object-fit: contain;
+    }
+  }
+}

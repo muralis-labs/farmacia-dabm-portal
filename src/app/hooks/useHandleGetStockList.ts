@@ -28,40 +28,52 @@ export const useHandleGetStockList = <T>() => {
     try {
       const page = filter.page ?? 1;
       const limit = filter.limit ?? 10;
-      const offset = page * limit - limit ;
+      const offset = page * limit - limit;
       let queryParams = "";
       const keys = Object.keys(filter);
 
       for (const key of keys) {
-        if (key === 'search' && filter.search) {
+        if (key === "search" && filter.search) {
           queryParams += `&search=${filter.search}`;
         }
 
-        if (key === 'genericName' && filter.genericName) {
+        if (key === "genericName" && filter.genericName) {
           queryParams += `&genericName=${filter.genericName}`;
         }
 
-        if (key === 'commercialName' && filter.commercialName) {
+        if (key === "commercialName" && filter.commercialName) {
           queryParams += `&commercialName=${filter.commercialName}`;
         }
 
-        if (key === 'pharmaceutical' && filter.pharmaceutical) {
+        if (key === "pharmaceutical" && filter.pharmaceutical) {
           queryParams += `&pharmaceutical=${filter.pharmaceutical}`;
         }
 
-        if (key === 'creationDateStart' && moment(filter.creationDateStart).isValid()) {
+        if (
+          key === "creationDateStart" &&
+          moment(filter.creationDateStart).isValid()
+        ) {
           queryParams += `&creationDateStart=${filter.creationDateStart}`;
         }
 
-        if (key === 'creationDateEnd' && moment(filter.creationDateEnd).isValid()) {
+        if (
+          key === "creationDateEnd" &&
+          moment(filter.creationDateEnd).isValid()
+        ) {
           queryParams += `&creationDateEnd=${filter.creationDateEnd}`;
         }
 
-        if (key === 'expirationDateStart' && moment(filter.expirationDateStart).isValid()) {
+        if (
+          key === "expirationDateStart" &&
+          moment(filter.expirationDateStart).isValid()
+        ) {
           queryParams += `&expirationDateStart=${filter.expirationDateStart}`;
         }
 
-        if (key === 'expirationDateEnd' && moment(filter.expirationDateEnd).isValid()) {
+        if (
+          key === "expirationDateEnd" &&
+          moment(filter.expirationDateEnd).isValid()
+        ) {
           queryParams += `&expirationDateEnd=${filter.expirationDateEnd}`;
         }
       }
@@ -70,10 +82,8 @@ export const useHandleGetStockList = <T>() => {
         `${BaseURL}/stock?limit=${limit}&offset=${offset}${queryParams}`
       );
 
-      if (res.data) {
-        setIsLoading(false);
-        setData(res.data);
-      }
+      setData(res.data ?? []);
+      setIsLoading(false);
     } catch (error: any) {
       setError(error);
     }
@@ -85,7 +95,7 @@ export const useHandleGetStockList = <T>() => {
   };
 
   useEffect(() => {
-    fetchData({page: 1, limit: 10});
+    fetchData({ page: 1, limit: 10 });
   }, []);
 
   return { data, isLoading, error, refetchData };
