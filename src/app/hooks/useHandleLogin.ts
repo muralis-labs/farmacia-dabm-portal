@@ -2,7 +2,7 @@
 import axios from "axios";
 import { environment, BaseURL } from "../constants/config";
 import { useState } from "react";
-import { redirect, useRouter } from "next/navigation";
+import {  useRouter } from "next/navigation";
 
 type loginProps = {
   login: string;

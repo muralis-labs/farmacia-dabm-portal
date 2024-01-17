@@ -1,0 +1,96 @@
+@import "@/app/sass/variables.scss";
+
+.sideBar {
+  width: 15%;
+  height: 100%;
+  padding: 24px;
+  background-color: $neutral-color-gray-softest;
+  box-shadow: 0px 8px 20px 0px rgba(0, 0, 0, 0.14);
+  box-shadow: 0px 4px 18px 1px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  &.sideBarCollapsed {
+    width: 4%;
+    padding: 16px;
+
+    .options {
+        justify-content: center;
+    }
+
+    .menu {
+        justify-content: center;
+    }
+  }
+
+  .iconContainer {
+    cursor: pointer;
+  }
+
+  .options {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 16px;
+  }
+
+  .formImage {
+    width: 100%;
+    height: 172px;
+    object-fit: contain;
+    margin-bottom: 16px;
+
+    &.collapsedImage{
+        width: 100%;
+        height: 40px;
+        object-fit: cover;
+    }
+  }
+
+  .menus {
+    height: 80%;
+    overflow-y: auto;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    .menu {
+      width: 100%;
+      height: 40px;
+      padding: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      color: $neutral-color-gray-strongest;
+      border-radius: 8px;
+      
+
+      .menuTitle {
+        margin-top: 2px;
+      }
+
+      &:hover, &.selected {
+        background-color: $brand-color-primary-darkest;
+        color: $neutral-color-gray-softest !important;
+
+        svg {
+          fill: $neutral-color-gray-softest !important;
+          stroke: $neutral-color-gray-softest !important;
+        }
+      }
+
+      &:active {
+        background-color: $brand-color-primary-dark-active;
+        color: $neutral-color-gray-softest !important;
+
+        svg {
+          fill: $neutral-color-gray-softest !important;
+          stroke: $neutral-color-gray-softest !important;
+        }
+      }
+    }
+  }
+}

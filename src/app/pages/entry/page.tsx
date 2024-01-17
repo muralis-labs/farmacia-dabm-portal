@@ -34,7 +34,7 @@ export default function Entry() {
   const [code, setCode] = useState("");
   const [commercialName, setCommercialName] = useState("");
   const [genericName, setGenericName] = useState("");
-  const [expirationDate, setExpirationDate] = useState<
+  const [expiration, setExpiration] = useState<
     string | Date | undefined
   >();
   const [unitOfMeasurement, setUnitOfMeasurement] = useState("");
@@ -71,7 +71,7 @@ export default function Entry() {
     },
     {
       title: "Validade",
-      field: "expirationDate",
+      field: "expiration",
     },
     {
       title: "Quantidade",
@@ -111,7 +111,7 @@ export default function Entry() {
       code,
       commercialName,
       genericName,
-      expirationDate,
+      expiration,
       unitOfMeasurement,
       shelf,
       medicineId,
@@ -134,16 +134,22 @@ export default function Entry() {
     clearFields();
   };
 
-  const clearFields = () => {
-    setCode("");
+  const clearMedicineFields = () => {
+    setMedicineId(null);
     setGenericName("");
     setCommercialName("");
     setUnitOfMeasurement("");
-    setExpirationDate(undefined);
-    setQuantity(undefined);
     setDosage(undefined);
+  }
+
+  const clearFields = () => {
+    setCode("");
+    clearMedicineFields();
+    setExpiration(undefined);
+    setQuantity(undefined);
     setBatch("");
     setShelf("");
+    setShelfId(null);
     setPharmaceutical("");
     setMedicineId(null);
   };
@@ -169,7 +175,7 @@ export default function Entry() {
     setBatch(medicine.batch);
     setShelf(medicine.shelf);
     setUnitOfMeasurement(medicine.unitOfMeasurement);
-    setExpirationDate(new Date(medicine.expirationDate));
+    setExpiration(new Date(medicine.expiration));
     setQuantity(medicine.quantity);
   };
 
@@ -191,6 +197,8 @@ export default function Entry() {
         setDosage(data.dosage);
         setGenericName(data.genericName);
         setUnitOfMeasurement(unit.name);
+      } else {
+        clearMedicineFields();
       }
     };
 
@@ -249,8 +257,8 @@ export default function Entry() {
             <Row className={`${isMobile ? styles.mobileRow : ""}`}>
               <Col>
                 <CustomDatePicker
-                  value={expirationDate as any}
-                  onChange={(date) => setExpirationDate(date)}
+                  value={expiration as any}
+                  onChange={(date) => setExpiration(date)}
                   id="expiration"
                   label="Data de validade"
                   placeholder="Data de validade"

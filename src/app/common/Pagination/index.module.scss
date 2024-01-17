@@ -1,0 +1,32 @@
+@import "@/app/sass/variables.scss";
+
+.pagination {
+  display: flex;
+  margin-top: 16px;
+  justify-content: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: $font-weight-regular;
+  line-height: $font-size-xxs;
+  letter-spacing: 0em;
+  text-align: center;
+  color: $neutral-color-gray-strongest;
+  align-items: center;
+
+  .nav {
+    cursor: pointer;
+  }
+
+  .page {
+    padding: 4px 8px;
+    width: 24px;
+    height: 20px;
+    border-radius: 4px;
+    cursor: pointer;
+
+    &.selected {
+        color: $neutral-color-gray-softest;
+        background-color: $brand-color-primary-medium;
+    }
+  }
+}

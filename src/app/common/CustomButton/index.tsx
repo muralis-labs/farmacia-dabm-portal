@@ -8,7 +8,6 @@ type CustomButtonProps = {
   onClick?: (e: any) => void;
   largeButton?: boolean,
   fullWidth?: boolean,
-
 }
 
 export default function CustomButton({

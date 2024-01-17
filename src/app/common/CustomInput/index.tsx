@@ -18,6 +18,7 @@ type CustomInputProps = {
   iconSize?: number;
   iconColor?: string;
   disabled?: boolean;
+  search?: boolean;
 };
 
 export default function CustomInput({
@@ -34,6 +35,7 @@ export default function CustomInput({
   iconSize = 18,
   iconColor = colors.neutralColorGrayStrongest,
   disabled = false,
+  search = false,
 }: CustomInputProps) {
   return (
     <div className={styles.group}>
@@ -46,7 +48,7 @@ export default function CustomInput({
         <FormControl
           disabled={disabled}
           id={id}
-          className={`${styles.input} shadow-none`}
+          className={`${styles.input} ${search ? styles.search : ''} shadow-none`}
           type={type}
           placeholder={placeholder}
           aria-label={placeholder}
@@ -55,6 +57,7 @@ export default function CustomInput({
           onChange={onChange}
           readOnly={readOnly}
           min="0"
+          autoComplete="off"
         />
         {showIcon && <Icon icon={icon} size={iconSize} color={iconColor} />}
       </div>
