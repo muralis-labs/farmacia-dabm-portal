@@ -41,6 +41,7 @@ export default function CustomDataTable({
   );
 
   const validateCellType = (cell: any) => {
+    if(String(cell).length <= 4) return false;
     return moment(cell, true).isValid();
   };
 
@@ -62,7 +63,6 @@ export default function CustomDataTable({
         )}
         {headers.map((header) => (
           <td key={header.field}>
-            {console.log(header.field)}
             {validateCellType(getItemContent(header, item))
               ? moment(getItemContent(header, item)).format("DD/MM/YYYY")
               : getItemContent(header, item)}

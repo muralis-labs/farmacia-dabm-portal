@@ -22,7 +22,7 @@ export default function Entry() {
 
   const { fetchData: getShelvesFetchData, isLoading: getShelvesLoading } =
     getShelvesService;
-  const { fetchData: createShelfData, isLoading: createShelfLoading } =
+  const { data: shelfData, fetchData: createShelfData, isLoading: createShelfLoading } =
     createShelfService;
   const { fetchData: getMedicineData, isLoading: getMedicineLoading } =
     getMedicineService;
@@ -45,6 +45,7 @@ export default function Entry() {
   const [quantity, setQuantity] = useState();
   const [medicinesList, setMedicineList] = useState<any[]>([]);
   const [key, setKey] = useState(Math.random());
+  const [edit, setEdit] = useState(false);
 
   const [selectors] = useDeviceSelectors(window.navigator.userAgent);
 
@@ -153,7 +154,9 @@ export default function Entry() {
   };
 
   const handleCreateNewShelf = async (data: string) => {
-    await createShelfData(data as any);
+    const res = await createShelfData(data as any);
+    setShelf(res[0].name);
+    setShelfId(res[0].id);
     await getShelvesFetchData();
   };
 
@@ -166,12 +169,14 @@ export default function Entry() {
   };
 
   const handleEditMedicine = (medicine: any) => {
+    setEdit(true);
     setCode(medicine.code);
     setGenericName(medicine.genericName);
     setCommercialName(medicine.commercialName);
     setPharmaceutical(medicine.pharmaceutical);
     setBatch(medicine.batch);
     setShelf(medicine.shelf);
+    setDosage(medicine.dosage);
     setUnitOfMeasurement(medicine.unitOfMeasurement);
     setExpiration(new Date(medicine.expiration));
     setQuantity(medicine.quantity);
@@ -179,6 +184,8 @@ export default function Entry() {
 
   const handleUploadAllMedicines = async () => {
     uploadMedicinesFetchData(medicinesList);
+    setMedicineList([]);
+    clearFields();
   };
 
   const handleUploadAllMedicinesMobile = async () => {
@@ -200,6 +207,8 @@ export default function Entry() {
       },
     ];
     uploadMedicinesFetchData(data);
+    setMedicineList([]);
+    clearFields();
   };
 
   useEffect(() => {
@@ -222,9 +231,9 @@ export default function Entry() {
     };
 
     let timer = setTimeout(() => {
-      getData();
+      if(!edit) getData();
     }, 700);
-
+    setEdit(false);
     return () => clearTimeout(timer);
   }, [code]);
 
@@ -301,7 +310,7 @@ export default function Entry() {
                   id="shelf"
                   label="Prateleira"
                   placeholder="Selecione a prateleira"
-                  disabled={getShelvesLoading}
+                  disabled={getShelvesLoading || createShelfLoading}
                   handleNewItem={(item) => handleCreateNewShelf(item)}
                   items={getShelvesService.data as any}
                   field="name"

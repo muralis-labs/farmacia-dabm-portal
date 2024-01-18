@@ -2,6 +2,7 @@
 import { Inter } from "next/font/google";
 import { usePathname } from "next/navigation";
 import { useDeviceSelectors } from "react-device-detect";
+import CustomFooter from "./common/CustomFooter/index";
 import CustomHeader from "./common/CustomHeader/index";
 import CustomSideBar from "./common/CustomSideBar/index";
 import styles from "./index.module.scss";
@@ -26,6 +27,24 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     },
   ];
 
+  const mobileMenus = [
+    {
+      name: "Dashboard",
+      icon: "home",
+      route: "/pages/entry",
+    },
+    {
+      name: "Estoque",
+      icon: "screen",
+      route: "/pages/stock",
+    },
+    {
+      name: "Calendário",
+      icon: "calendar",
+      route: "/pages",
+    },
+  ];
+
   const pathTitle = pathname.includes("/pages/entry")
     ? "Atualizar entrada de estoque"
     : "Estoque";
@@ -36,9 +55,19 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         {!pathname.includes("/pages/login") && !isMobile && (
           <CustomSideBar menus={menus} selectedPath={pathname} />
         )}
-        <div className={`${styles.safeArea} ${isMobile || pathname.includes("/pages/login") ? styles.removePadding : ''}`}>
+        <div
+          className={`${styles.safeArea} ${
+            isMobile || pathname.includes("/pages/login")
+              ? styles.removePadding
+              : ""
+          }`}
+        >
           {!pathname.includes("/pages/login") && !isMobile && (
             <CustomHeader title={pathTitle} />
+          )}
+
+          {!pathname.includes("/pages/login") && isMobile && (
+            <CustomFooter menus={mobileMenus} selectedPath={pathname} />
           )}
 
           {children}
