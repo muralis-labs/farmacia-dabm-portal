@@ -333,7 +333,7 @@ export default function Page() {
           )}
         </div>
       ) : (
-        <div>
+        <div >
           {stockList.data && stockList.data.length > 0 && (
             <div onScroll={handleScroll} className={styles.listContainer}>
               {stockList.data.map((item) => renderMobileCard(item))}
