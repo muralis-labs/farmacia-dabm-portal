@@ -84,7 +84,7 @@
     display: flex;
     align-items: center;
     gap: 4px;
-    
+
     .option {
       width: 24px;
       height: 24px;
@@ -97,5 +97,31 @@
       cursor: pointer;
     }
   }
- 
+}
+
+.notFoundContainer {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px;
+  gap: 16px;
+
+  .notFoundText {
+    font-size: $font-size-md;
+    font-weight: $font-weight-medium;
+    line-height: 27px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: $brand-color-primary-darkest;
+  }
+
+  .notFoundSubtitle {
+    font-size: $font-size-xs;
+    font-weight: $font-weight-regular;
+    line-height: 24px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: $neutral-color-gray-strongest;
+  }
 }

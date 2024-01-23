@@ -1,7 +1,9 @@
-"use client";
+'use client'
+import React, { useMemo } from "react";
 import { Inter } from "next/font/google";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useDeviceSelectors } from "react-device-detect";
+import CustomFloatButton from "./common/CustomFloatButton/index";
 import CustomFooter from "./common/CustomFooter/index";
 import CustomHeader from "./common/CustomHeader/index";
 import CustomSideBar from "./common/CustomSideBar/index";
@@ -9,70 +11,62 @@ import styles from "./index.module.scss";
 
 const inter = Inter({ subsets: ["latin"] });
 
-export default function Layout({ children }: { children: React.ReactNode }) {
+const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const query = searchParams.get("scan");
   const [selectors] = useDeviceSelectors(window.navigator.userAgent);
   const { isMobile } = selectors;
 
-  const menus = [
-    {
-      name: "Entrada",
-      icon: "arrow_up",
-      route: "/pages/entry",
-    },
-    {
-      name: "Estoque",
-      icon: "bag",
-      route: "/pages/stock",
-    },
-  ];
+  const menus = useMemo(() => [
+    { name: "Entrada", icon: "arrow_up", route: "/pages/entry" },
+    { name: "Saída", icon: "arrow_down", route: "/pages/outflow" },
+    { name: "Estoque", icon: "bag", route: "/pages/stock" },
+  ], []);
 
-  const mobileMenus = [
-    {
-      name: "Dashboard",
-      icon: "home",
-      route: "/pages/entry",
-    },
-    {
-      name: "Estoque",
-      icon: "screen",
-      route: "/pages/stock",
-    },
-    {
-      name: "Calendário",
-      icon: "calendar",
-      route: "/pages",
-    },
-  ];
+  const mobileMenus = useMemo(() => [
+    { name: "Dashboard", icon: "home", route: "/pages/entry" },
+    { name: "Estoque", icon: "screen", route: "/pages/stock" },
+    { name: "Calendário", icon: "calendar", route: "/pages" },
+  ], []);
 
-  const pathTitle = pathname.includes("/pages/entry")
-    ? "Atualizar entrada de estoque"
-    : "Estoque";
+  const pathTitle = useMemo(() => {
+    return pathname.includes("/pages/entry") ? "Atualizar entrada de estoque" : "Estoque";
+  }, [pathname]);
+
+  const showScan = useMemo(() => {
+    return pathname.includes("/pages/entry") && query;
+  }, [pathname, query]);
+
+  const renderSideBar = () => (
+    !pathname.includes("/pages/login") && !isMobile && <CustomSideBar menus={menus} selectedPath={pathname} />
+  );
+
+  const renderHeader = () => (
+    !pathname.includes("/pages/login") && !isMobile && <CustomHeader title={pathTitle} />
+  );
+
+  const renderMobileFooter = () => (
+    !pathname.includes("/pages/login") && isMobile && !showScan && <CustomFooter menus={mobileMenus} selectedPath={pathname} />
+  );
+
+  const renderScanButton = () => (
+    !pathname.includes("/pages/login") && showScan && <CustomFloatButton />
+  );
 
   return (
     <body className={inter.className}>
       <div className={styles.mainContainer}>
-        {!pathname.includes("/pages/login") && !isMobile && (
-          <CustomSideBar menus={menus} selectedPath={pathname} />
-        )}
-        <div
-          className={`${styles.safeArea} ${
-            isMobile || pathname.includes("/pages/login")
-              ? styles.removePadding
-              : ""
-          }`}
-        >
-          {!pathname.includes("/pages/login") && !isMobile && (
-            <CustomHeader title={pathTitle} />
-          )}
-
-          {!pathname.includes("/pages/login") && isMobile && (
-            <CustomFooter menus={mobileMenus} selectedPath={pathname} />
-          )}
-
+        {renderSideBar()}
+        <div className={`${styles.safeArea} ${isMobile || pathname.includes("/pages/login") ? styles.removePadding : ""}`}>
+          {renderHeader()}
+          {renderMobileFooter()}
+          {renderScanButton()}
           {children}
         </div>
       </div>
     </body>
   );
-}
+};
+
+export default Layout;

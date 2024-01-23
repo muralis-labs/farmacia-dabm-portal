@@ -15,7 +15,7 @@ export const useHandleShelves = <T>() => {
       const res = await axios.get(`${BaseURL}/shelves`);
 
       if (res.data) {
-        setData(res.data.data)
+        setData(res.data)
       }
     } catch (error: any) {
       setError(error);

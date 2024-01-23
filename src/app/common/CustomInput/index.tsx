@@ -10,7 +10,7 @@ type CustomInputProps = {
   type?: string;
   onChange?: (e: any) => void;
   onClick?: (e: any) => void;
-  value?: string;
+  value?: string | number | string[] | undefined;
   id: string;
   readOnly?: boolean;
   showIcon?: boolean;
