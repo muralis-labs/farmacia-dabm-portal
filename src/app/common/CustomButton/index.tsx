@@ -8,6 +8,8 @@ type CustomButtonProps = {
   onClick?: (e: any) => void;
   largeButton?: boolean,
   fullWidth?: boolean,
+  danger?: boolean,
+  onlyText?: boolean,
 }
 
 export default function CustomButton({
@@ -16,8 +18,10 @@ export default function CustomButton({
   onClick = () => {},
   largeButton = false,
   fullWidth = false,
+  danger = false,
+  onlyText = false,
 }: CustomButtonProps) {
   return (
-    <Button disabled={disabled} onClick={onClick} className={`${styles.customButton} ${largeButton ? styles.largeButton : {}} ${fullWidth ? styles.fullWidth : {}}`} as="input" type="button" value={label} />
+    <Button  disabled={disabled} onClick={onClick} className={`${styles.customButton} ${onlyText ? styles.onlyText : {}} ${danger ? styles.danger : {}} ${largeButton ? styles.largeButton : {}} ${fullWidth ? styles.fullWidth : {}}`} as="input" type="button" value={label} />
   );
 }

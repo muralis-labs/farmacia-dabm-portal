@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import CustomButton from "@/app/common/CustomButton/index";
 import CustomInput from "@/app/common/CustomInput/index";
 import { Col, Form, Row } from "react-bootstrap";
@@ -13,6 +14,7 @@ import { useHandleCreateShelf } from "@/app/hooks/useHandleCreateShelf";
 import { useHandleGetMedicine } from "@/app/hooks/useHandleGetMedicine";
 import { useDeviceSelectors } from "react-device-detect";
 import { useHandleUploadMedicines } from "@/app/hooks/useHandleUploadMedicines";
+import Scan from "./components/Scan";
 
 export default function Entry() {
   const getShelvesService = useHandleShelves();
@@ -20,9 +22,9 @@ export default function Entry() {
   const getMedicineService = useHandleGetMedicine();
   const uploadMedicinesService = useHandleUploadMedicines();
 
-  const { fetchData: getShelvesFetchData, isLoading: getShelvesLoading } =
+  const { data: shelves, fetchData: getShelvesFetchData, isLoading: getShelvesLoading } =
     getShelvesService;
-  const { data: shelfData, fetchData: createShelfData, isLoading: createShelfLoading } =
+  const { fetchData: createShelfData, isLoading: createShelfLoading } =
     createShelfService;
   const { fetchData: getMedicineData, isLoading: getMedicineLoading } =
     getMedicineService;
@@ -30,7 +32,12 @@ export default function Entry() {
     fetchData: uploadMedicinesFetchData,
     isLoading: uploadMedicinesLoading,
   } = uploadMedicinesService;
+  const { push } = useRouter();
 
+  const searchParams = useSearchParams();
+  const scan = searchParams.get("scan");
+
+  const [scanCode, setScanCode] = useState("");
   const [code, setCode] = useState("");
   const [commercialName, setCommercialName] = useState("");
   const [genericName, setGenericName] = useState("");
@@ -212,6 +219,16 @@ export default function Entry() {
   };
 
   useEffect(() => {
+    let timer = setTimeout(() => {
+      if (scanCode) {
+        push("/pages/entry");
+        setCode(scanCode);
+      }
+    }, 700);
+    return () => clearTimeout(timer);
+  }, [scanCode]);
+
+  useEffect(() => {
     const getData = async () => {
       const data = await getMedicineData({ code });
 
@@ -231,7 +248,7 @@ export default function Entry() {
     };
 
     let timer = setTimeout(() => {
-      if(!edit) getData();
+      if (!edit) getData();
     }, 700);
     setEdit(false);
     return () => clearTimeout(timer);
@@ -239,168 +256,178 @@ export default function Entry() {
 
   return (
     <>
-      <div className={`${styles.entry} ${isMobile ? styles.mobile : ""}`}>
-        <div
-          key={key}
-          className={`${styles.entryContainer} ${styles.flexColDirection}`}
-        >
-          <div className={styles.topInfo}>
-            <h2 className={styles.title}>Informações do Medicamento</h2>
-            <div className={styles.divider} />
-          </div>
-          <Form className={styles.flexColDirection}>
-            <Row className={`${isMobile ? styles.mobileRow : ""}`}>
-              <Col xs={isMobile ? 12 : 6}>
-                <CustomInput
-                  value={code}
-                  onChange={(event) => setCode(event?.target.value)}
-                  id="code"
-                  label="Código de barras"
-                  placeholder="Código de barras do produto"
-                  showIcon
-                  icon="pencil"
-                />
-              </Col>
-              <Col>
-                <CustomInput
-                  value={commercialName}
-                  onChange={(event) => setCommercialName(event?.target.value)}
-                  disabled={getMedicineLoading || medicineId !== null}
-                  id="commercial-name"
-                  label="Nome comercial"
-                  placeholder="Nome comercial do produto"
-                />
-              </Col>
-              <Col>
-                <CustomInput
-                  value={genericName}
-                  onChange={(event) => setGenericName(event?.target.value)}
-                  disabled={getMedicineLoading || medicineId !== null}
-                  id="generic-name"
-                  label="Nome genérico"
-                  placeholder="Nome genérico do produto"
-                />
-              </Col>
-            </Row>
-            <Row className={`${isMobile ? styles.mobileRow : ""}`}>
-              <Col>
-                <CustomDatePicker
-                  value={expiration as any}
-                  onChange={(date) => setExpiration(date)}
-                  id="expiration"
-                  label="Data de validade"
-                  placeholder="Data de validade"
-                />
-              </Col>
-              <Col>
-                <CustomAutoComplete
-                  value={unitOfMeasurement ?? ""}
-                  id="unitOfMeasurement"
-                  label="Unidade de medida"
-                  placeholder="Selecione a unidade de medida"
-                  disabled={getMedicineLoading || medicineId !== null}
-                  items={UNIT_OF_MEASUREMENT as any}
-                  onItemSelect={(item) => setUnitOfMeasurement(item.name)}
-                  field="name"
-                />
-              </Col>
-              <Col>
-                <CustomAutoComplete
-                  value={shelf ?? ""}
-                  id="shelf"
-                  label="Prateleira"
-                  placeholder="Selecione a prateleira"
-                  disabled={getShelvesLoading || createShelfLoading}
-                  handleNewItem={(item) => handleCreateNewShelf(item)}
-                  items={getShelvesService.data as any}
-                  field="name"
-                  onItemSelect={(item) => {
-                    setShelf(item.name);
-                    setShelfId(item.id);
-                  }}
-                />
-              </Col>
-              <Col>
-                <CustomInput
-                  value={dosage}
-                  onChange={(event) => setDosage(event.target.value)}
-                  disabled={getMedicineLoading || medicineId !== null}
-                  id="dosage"
-                  type="number"
-                  label="Dosagem"
-                  placeholder="Dosagem do produto"
-                />
-              </Col>
-            </Row>
-            <Row className={`${isMobile ? styles.mobileRow : ""}`}>
-              <Col xs={isMobile ? 12 : 6}>
-                <CustomInput
-                  value={pharmaceutical}
-                  onChange={(event) => setPharmaceutical(event.target.value)}
-                  id="pharmaceutical"
-                  label="Farmacêutico"
-                  placeholder="Nome do farmacêutico"
-                />
-              </Col>
-              <Col>
-                <CustomInput
-                  value={batch}
-                  onChange={(event) => setBatch(event.target.value)}
-                  id="batch"
-                  label="Lote"
-                  placeholder="Número do lote"
-                />
-              </Col>
-              <Col>
-                <CustomInput
-                  value={quantity}
-                  onChange={(event) => setQuantity(event.target.value)}
-                  id="quantity"
-                  type="number"
-                  label="Quantidade"
-                  placeholder="Quantidade de produtos"
-                />
-              </Col>
-            </Row>
-
-            {!isMobile && (
-              <Row xs={4} md={4} lg={4}>
+      <div className={`${styles.entry} ${styles.mobileScan} ${isMobile ? styles.mobile : ""}`}>
+        {scan ? (
+          <Scan
+            isMobile={isMobile}
+            onScanMobile={(code)=> setScanCode(code)}
+            onChange={(event) => setScanCode(event.target.value)}
+          />
+        ) : (
+          <div
+            key={key}
+            className={`${styles.entryContainer} ${styles.flexColDirection}`}
+          >
+            <div className={styles.topInfo}>
+              <h2 className={styles.title}>Informações do Medicamento</h2>
+              <div className={styles.divider} />
+            </div>
+            <Form className={styles.flexColDirection}>
+              <Row className={`${isMobile ? styles.mobileRow : ""}`}>
                 <Col xs={isMobile ? 12 : 6}>
-                  <CustomButton
-                    fullWidth
-                    disabled={isDisabled() || getShelvesService.isLoading}
-                    onClick={handleAddMedicine}
-                    label="Adicionar Medicamento"
+                  <CustomInput
+                    value={code}
+                    onChange={(event) => setCode(event?.target.value)}
+                    id="code"
+                    label="Código de barras"
+                    placeholder="Código de barras do produto"
+                    showIcon
+                    icon="pencil"
+                  />
+                </Col>
+                <Col>
+                  <CustomInput
+                    value={commercialName}
+                    onChange={(event) => setCommercialName(event?.target.value)}
+                    disabled={getMedicineLoading || medicineId !== null}
+                    id="commercial-name"
+                    label="Nome comercial"
+                    placeholder="Nome comercial do produto"
+                  />
+                </Col>
+                <Col>
+                  <CustomInput
+                    value={genericName}
+                    onChange={(event) => setGenericName(event?.target.value)}
+                    disabled={getMedicineLoading || medicineId !== null}
+                    id="generic-name"
+                    label="Nome genérico"
+                    placeholder="Nome genérico do produto"
                   />
                 </Col>
               </Row>
-            )}
-          </Form>
+              <Row className={`${isMobile ? styles.mobileRow : ""}`}>
+                <Col>
+                  <CustomDatePicker
+                    value={expiration as any}
+                    onChange={(date) => setExpiration(date)}
+                    id="expiration"
+                    label="Data de validade"
+                    placeholder="Data de validade"
+                  />
+                </Col>
+                <Col>
+                  <CustomAutoComplete
+                    value={unitOfMeasurement ?? ""}
+                    id="unitOfMeasurement"
+                    label="Unidade de medida"
+                    placeholder="Selecione a unidade de medida"
+                    disabled={getMedicineLoading || medicineId !== null}
+                    items={UNIT_OF_MEASUREMENT as any}
+                    onItemSelect={(item) => setUnitOfMeasurement(item.name)}
+                    field="name"
+                  />
+                </Col>
+                <Col>
+                  <CustomAutoComplete
+                    value={shelf ?? ""}
+                    id="shelf"
+                    label="Prateleira"
+                    placeholder="Selecione a prateleira"
+                    disabled={getShelvesLoading || createShelfLoading}
+                    handleNewItem={(item) => handleCreateNewShelf(item)}
+                    items={shelves as any}
+                    field="name"
+                    onItemSelect={(item) => {
+                      setShelf(item.name);
+                      setShelfId(item.id);
+                    }}
+                  />
+                </Col>
+                <Col>
+                  <CustomInput
+                    value={dosage}
+                    onChange={(event) => setDosage(event.target.value)}
+                    disabled={getMedicineLoading || medicineId !== null}
+                    id="dosage"
+                    type="number"
+                    label="Dosagem"
+                    placeholder="Dosagem do produto"
+                  />
+                </Col>
+              </Row>
+              <Row className={`${isMobile ? styles.mobileRow : ""}`}>
+                <Col xs={isMobile ? 12 : 6}>
+                  <CustomInput
+                    value={pharmaceutical}
+                    onChange={(event) => setPharmaceutical(event.target.value)}
+                    id="pharmaceutical"
+                    label="Farmacêutico"
+                    placeholder="Nome do farmacêutico"
+                  />
+                </Col>
+                <Col>
+                  <CustomInput
+                    value={batch}
+                    onChange={(event) => setBatch(event.target.value)}
+                    id="batch"
+                    label="Lote"
+                    placeholder="Número do lote"
+                  />
+                </Col>
+                <Col>
+                  <CustomInput
+                    value={quantity}
+                    onChange={(event) => setQuantity(event.target.value)}
+                    id="quantity"
+                    type="number"
+                    label="Quantidade"
+                    placeholder="Quantidade de produtos"
+                  />
+                </Col>
+              </Row>
 
-          {!isMobile && (
-            <>
-              <h2 className={`${styles.title} ${styles.mt}`}>
-                Medicamentos Adicionados
-              </h2>
-              <CustomDataTable
-                headers={headers}
-                rows={medicinesList}
-                showOptions
-                onRemoveAction={handleRemoveMedicine}
-                onEditAction={handleEditMedicine}
-              />
-              <div className={styles.options}>
-                <CustomButton
-                  onClick={handleUploadAllMedicines}
-                  disabled={medicinesList.length <= 0 || uploadMedicinesLoading}
-                  label="Registrar entrada"
+              {!isMobile && (
+                <Row xs={4} md={4} lg={4}>
+                  <Col xs={isMobile ? 12 : 6}>
+                    <CustomButton
+                      fullWidth
+                      disabled={isDisabled() || getShelvesService.isLoading}
+                      onClick={handleAddMedicine}
+                      label="Adicionar Medicamento"
+                    />
+                  </Col>
+                </Row>
+              )}
+            </Form>
+
+            {!isMobile && (
+              <>
+                <h2 className={`${styles.title} ${styles.mt}`}>
+                  Medicamentos Adicionados
+                </h2>
+                <CustomDataTable
+                  headers={headers}
+                  rows={medicinesList}
+                  showOptions
+                  onRemoveAction={handleRemoveMedicine}
+                  onEditAction={handleEditMedicine}
                 />
-              </div>
-            </>
-          )}
-        </div>
+                <div className={styles.options}>
+                  <CustomButton
+                    onClick={handleUploadAllMedicines}
+                    disabled={
+                      medicinesList.length <= 0 || uploadMedicinesLoading
+                    }
+                    label="Registrar entrada"
+                  />
+                </div>
+              </>
+            )}
+          </div>
+        )}
       </div>
-      {isMobile && (
+      {isMobile && !scan && (
         <div className={styles.mobileOptions}>
           <CustomButton
             onClick={handleUploadAllMedicinesMobile}

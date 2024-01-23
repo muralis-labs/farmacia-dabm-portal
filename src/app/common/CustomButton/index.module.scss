@@ -24,9 +24,41 @@
     background-color: $brand-color-primary-dark-active;
   }
 
+  &.danger {
+    border-color: $volcano-light;
+    background-color: $volcano-light;
+
+    &:hover {
+      border-color: $volcano-strong;
+      background-color: $volcano-strong;
+    }
+
+    &:active {
+      border-color: $volcano-strongest;
+      background-color: $volcano-strongest;
+    }
+  }
+
+  &.onlyText {
+    border: unset;
+    color: $brand-color-primary-darkest !important;
+    border-color: unset !important;
+    background-color: unset !important;
+
+    &:hover {
+      border-color: unset !important;
+      background-color: unset !important;
+    }
+
+    &:active {
+      border-color: unset !important;
+      background-color: unset !important;
+    }
+  }
+
   &:disabled {
-    color: $neutral-color-gray-strong;
-    border-color: $neutral-color-gray-soft;
+    color: $neutral-color-gray-strong !important;
+    border-color: $neutral-color-gray-soft !important;
     background-color: $neutral-color-gray-soft !important;
   }
 }
