@@ -1,7 +1,6 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import CustomDataTable from "@/app/common/CustomDataTable/index";
-import { useHandleGetStockList } from "@/app/hooks/useHandleGetStockList";
 import Pagination from "@/app/common/Pagination/index";
 import styles from "./page.module.scss";
 import CustomInput from "@/app/common/CustomInput/index";
@@ -11,14 +10,15 @@ import CustomDatePickerRange from "@/app/common/CustomDatePickerRange/index";
 import CustomButton from "@/app/common/CustomButton/index";
 import moment from "moment";
 import { useDeviceSelectors } from "react-device-detect";
+import { useHandleGetMovementList } from "@/app/hooks/useHandleGetMovementList";
 
 export default function Page() {
-  const getStockListService = useHandleGetStockList();
+  const getMovementListService = useHandleGetMovementList();
   const {
-    refetchData: getStockList,
-    data: stockList,
-    isLoading: stockListLoading,
-  } = getStockListService;
+    refetchData: getMovementList,
+    data: movementList,
+    isLoading: movementLoading,
+  } = getMovementListService;
 
   const [selectors] = useDeviceSelectors(window.navigator.userAgent);
   const { isMobile } = selectors;
@@ -27,6 +27,7 @@ export default function Page() {
   const [showFilters, setShowFilters] = useState(false);
   const [selectedPage, setSelectedPage] = useState(1);
   const [search, setSearch] = useState("");
+  const [searchMovementType, setSearchMovementType] = useState("");
   const [searchGenericName, setSearchGenericName] = useState("");
   const [searchCommercialName, setSearchCommercialName] = useState("");
   const [searchPharmaceutical, setSearchPharmaceutical] = useState("");
@@ -67,10 +68,24 @@ export default function Page() {
       title: "Quantidade",
       field: "quantity",
     },
+    {
+      title: "Farmacêutico",
+      field: "pharmaceutical",
+    },
+    {
+      title: "Atividade",
+      field: "movement_type",
+      showIcon: true
+    },
+    {
+      title: "Data",
+      field: "updated_at",
+    }
   ];
 
   const clearFilters = () => {
     setSearch("");
+    setSearchMovementType("");
     setSearchCommercialName("");
     setSearchGenericName("");
     setStartEntryDate(null);
@@ -78,12 +93,12 @@ export default function Page() {
     setEndExpirationDate(null);
     setStartExpirationDate(null);
     setSearchPharmaceutical("");
-    getStockList({ page: 1, limit: 10 });
+    getMovementList({ page: 1, limit: 10 });
   };
 
   const handleChangePage = (page: number) => {
     setSelectedPage(page);
-    getStockList({ page, limit: 10 });
+    getMovementList({ page, limit: 10 });
   };
 
   const onChangeEntryDate = (dates: any) => {
@@ -99,7 +114,7 @@ export default function Page() {
   };
 
   const handleClickOutside = (event: MouseEvent) => {
-    if (containerRef.current && !containerRef.current.contains(event.target)) {
+    if (showFilters && containerRef.current && !containerRef.current.contains(event.target)) {
       setShowFilters(false);
     }
   };
@@ -114,11 +129,11 @@ export default function Page() {
   };
 
   const handleSelectAllRows = () => {
-    if (selectedRows.length === stockList.data.length) setSelectedRows([]);
-    else setSelectedRows(stockList.data);
+    if (selectedRows.length === movementList.data.length) setSelectedRows([]);
+    else setSelectedRows(movementList.data);
   };
 
-  const getStockListWithFilters = () => {
+  const getMovementListWithFilters = () => {
     const entryDate = {
       start: moment(startEntryDate).subtract(1, "days").format("YYYY-MM-DD"),
       end: moment(endEntryDate).subtract(1, "days").format("YYYY-MM-DD"),
@@ -138,8 +153,9 @@ export default function Page() {
       pharmaceutical: searchPharmaceutical,
       genericName: searchGenericName,
       commercialName: searchCommercialName,
+      movementType: searchMovementType,
     };
-    getStockList(filter as any);
+    getMovementList(filter as any);
     setShowFilters(false);
   };
 
@@ -186,8 +202,8 @@ export default function Page() {
     const bottom =
       e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
 
-    if (bottom && isMobile && limit < stockList.total) {
-      getStockList({limit: limit + 5, page: 1});
+    if (bottom && isMobile && limit < movementList.total) {
+      getMovementList({limit: limit + 5, page: 1});
       setLimit(limit + 5);
     }
 
@@ -202,7 +218,7 @@ export default function Page() {
 
   useEffect(() => {
     let timer = setTimeout(() => {
-      getStockListWithFilters();
+      getMovementListWithFilters();
     }, 700);
 
     return () => clearTimeout(timer);
@@ -211,7 +227,7 @@ export default function Page() {
   return (
     <>
       {!isMobile ? (
-        <div className={styles.page}>
+        <div>
           <div className={styles.filters}>
             <CustomInput
               id="search"
@@ -238,7 +254,7 @@ export default function Page() {
               </div>
 
               {showFilters && (
-                <div className={styles.filterForm}>
+                <div ref={containerRef} className={styles.filterForm}>
                   <div className={styles.filterText}>
                     <h2>Filtros</h2>
                     <h3 onClick={clearFilters}>Limpar tudo</h3>
@@ -249,6 +265,19 @@ export default function Page() {
                     onChange={onChangeEntryDate}
                     startDate={startEntryDate as any}
                     endDate={endEntryDate as any}
+                  />
+                  <CustomInput
+                    id="searchMovementType"
+                    placeholder="Buscar tipo de movimentação"
+                    label="Tipo de movimentação"
+                    onChange={(event) =>
+                      setSearchMovementType(event.target.value)
+                    }
+                    value={searchMovementType}
+                    showIcon
+                    icon="lupe"
+                    iconSize={15}
+                    iconColor={colors.neutralColorGrayStrong}
                   />
                   <CustomInput
                     id="searchGenericName"
@@ -297,7 +326,7 @@ export default function Page() {
                     endDate={endExpirationDate as any}
                   />
                   <CustomButton
-                    onClick={getStockListWithFilters}
+                    onClick={getMovementListWithFilters}
                     label="Aplicar"
                     fullWidth
                   />
@@ -320,23 +349,23 @@ export default function Page() {
             onSelectAllRows={handleSelectAllRows}
             selectionList={selectedRows}
             headers={headers}
-            rows={stockList ? (stockList.data as any[]) : []}
-            isLoading={stockListLoading}
+            rows={movementList ? (movementList.data as any[]) : []}
+            isLoading={movementLoading}
           />
-          {!stockListLoading && stockList.data && (
+          {!movementLoading && movementList.data && (
             <Pagination
               onSelectPage={handleChangePage}
               limit={10}
-              total={stockList.total}
+              total={movementList.total}
               selectedPage={selectedPage}
             />
           )}
         </div>
       ) : (
         <div >
-          {stockList.data && stockList.data.length > 0 && (
+          {movementList.data && movementList.data.length > 0 && (
             <div onScroll={handleScroll} className={styles.listContainer}>
-              {stockList.data.map((item) => renderMobileCard(item))}
+              {movementList.data.map((item) => renderMobileCard(item))}
             </div>
           )}
         </div>

@@ -12,6 +12,7 @@ type CustomSideBarProps = {
     name: string;
     icon: string;
     route: string;
+    subMenuRoute?: string;
   }[];
 };
 
@@ -24,7 +25,7 @@ export default function CustomSideBar({
   const [collapsed, setCollapsed] = useState<boolean>(false);
 
   const renderMenu = (
-    menu: { name: string; icon: string; route: string },
+    menu: { name: string; icon: string; route: string, subMenuRoute?: string },
     index: number
   ) => {
     return (
@@ -32,7 +33,7 @@ export default function CustomSideBar({
         onClick={() => push(menu.route)}
         key={index}
         className={`${styles.menu} ${
-          selectedPath === menu.route ? styles.selected : ""
+          selectedPath === menu.route || selectedPath === menu?.subMenuRoute  ? styles.selected : ""
         }`}
       >
         <Icon

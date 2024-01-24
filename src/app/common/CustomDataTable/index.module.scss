@@ -125,3 +125,9 @@
     color: $neutral-color-gray-strongest;
   }
 }
+
+.iconContainer {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}

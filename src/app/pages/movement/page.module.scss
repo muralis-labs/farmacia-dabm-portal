@@ -1,0 +1,107 @@
+@import "@/app/sass/variables";
+
+.filters {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  gap: 24px;
+}
+
+.icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: $brand-color-primary-darkest;
+}
+
+.filterButton {
+  position: relative;
+
+  .filterForm {
+    position: absolute;
+    width: 350px;
+    right: 0;
+    background-color: $neutral-color-gray-softest;
+    padding: 16px 24px;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    .filterText {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: $brand-color-primary-darkest;
+
+      h2 {
+        font-size: $font-size-xl;
+        font-weight: $font-weight-medium;
+        line-height: 32px;
+        letter-spacing: 0em;
+        text-align: left;
+      }
+
+      h3 {
+        font-size: $font-size-xs;
+        font-weight: $font-weight-medium;
+        line-height: 24px;
+        letter-spacing: 0em;
+        text-align: center;
+        cursor: pointer;
+      }
+    }
+  }
+}
+
+
+
+.listContainer {
+  padding: 8px 22px;
+  height: 92vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+
+  .card {
+    width: 100%;
+    padding: 16px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    background-color: $neutral-color-gray-softest;
+    border: 1px solid $neutral-color-gray-medium;
+
+    .cardRow {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+
+      .name {
+        width: 50%;
+        font-size: $font-size-xs;
+        font-weight: $font-weight-regular;
+        line-height: 24px;
+        letter-spacing: 0em;
+        text-align: left;
+        color: $neutral-color-gray-medium;
+      }
+
+      .info {
+        font-size: $font-size-xs;
+        font-weight: $font-weight-regular;
+        line-height: 24px;
+        letter-spacing: 0em;
+        text-align: left;
+        color: $neutral-color-dark-strongest;
+      }
+    }
+  }
+}

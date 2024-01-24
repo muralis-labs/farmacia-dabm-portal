@@ -61,7 +61,7 @@ interface MedicineData {
   unitOfMeasurement: string;
 }
 
-export default function Outflow() {
+export default function Page() {
   const getShelvesService = useHandleShelves();
   const createShelfService = useHandleCreateShelf();
   const getMedicineService = useHandleGetMedicine();

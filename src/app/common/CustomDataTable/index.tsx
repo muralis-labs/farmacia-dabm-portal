@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import moment from "moment";
 import { Spinner } from "react-bootstrap";
 import Icon from "../icon/index";
@@ -6,11 +6,13 @@ import CustomCheckbox from "../CustomCheckbox/index";
 import styles from "./index.module.scss";
 import notFound from "@/app/assets/no_results_found.svg";
 import Image from "next/image";
+import colors from "@/app/sass/_variables.module.scss";
 
 type Header = {
   title: string;
   field: string;
   key?: string;
+  showIcon?: boolean;
 };
 
 type CustomDataTableProps = {
@@ -38,7 +40,6 @@ const CustomDataTable: React.FC<CustomDataTableProps> = ({
   onRemoveAction,
   onEditAction,
 }: CustomDataTableProps) => {
-
   const renderTableHeader = (item: Header) => (
     <th key={item.title}>{item.title}</th>
   );
@@ -47,19 +48,35 @@ const CustomDataTable: React.FC<CustomDataTableProps> = ({
     return headers.map((item) => renderTableHeader(item));
   }, [headers]);
 
-
   const validateCellType = (cell: any) => {
     return String(cell).length > 4 && moment(cell, true).isValid();
   };
 
   const formatDate = (date: string) => moment(date).format("DD/MM/YYYY");
 
+  const getItemIconContent = (header: Header, item: any) => {
+    return (
+      <div className={styles.iconContainer}>
+        <Icon
+          icon={item[header.field] === "entry" ? "arrow_up" : "arrow_down"}
+          size={20}
+          color={
+            item[header.field] === "entry"
+              ? colors.feedbackColorSuccess
+              : colors.feedbackColorDanger
+          }
+        />
+        {item[header.field] === "entry" ? "Entrada" : "Saída"}
+      </div>
+    );
+  };
+
   const getItemContent = (header: Header, item: any) => {
     return header.key ? item[header.key][header.field] : item[header.field];
   };
 
   const renderTableRow = (item: any, index: number) => (
-    <tr className={`${styles.row} ${styles.info}`} key={item.id }>
+    <tr className={`${styles.row} ${styles.info}`} key={item.id}>
       {selection && (
         <td className={styles.selection}>
           <CustomCheckbox
@@ -74,6 +91,8 @@ const CustomDataTable: React.FC<CustomDataTableProps> = ({
         <td key={header.field}>
           {validateCellType(getItemContent(header, item))
             ? formatDate(getItemContent(header, item))
+            : header.showIcon
+            ? getItemIconContent(header, item)
             : getItemContent(header, item)}
         </td>
       ))}
@@ -91,10 +110,7 @@ const CustomDataTable: React.FC<CustomDataTableProps> = ({
             )}
 
             {onEditAction && (
-              <div
-                className={styles.option}
-                onClick={() => onEditAction(item)}
-              >
+              <div className={styles.option} onClick={() => onEditAction(item)}>
                 <Icon icon="pencil" size={12} />
               </div>
             )}
@@ -104,12 +120,12 @@ const CustomDataTable: React.FC<CustomDataTableProps> = ({
     </tr>
   );
 
- const formattedRows = () => {
+  const formattedRows = () => {
     return rows?.map((item, index) => renderTableRow(item, index));
-  }
+  };
 
   return (
-    <table key='table-key' className={styles.table}>
+    <table key="table-key" className={styles.table}>
       <thead>
         <tr className={`${styles.headers} ${styles.row}`}>
           {selection && (
@@ -140,8 +156,12 @@ const CustomDataTable: React.FC<CustomDataTableProps> = ({
             <td className={styles.emptyText} colSpan={headers.length}>
               <div className={styles.notFoundContainer}>
                 <Image src={notFound} alt="not found" />
-                <span className={styles.notFoundText}>Nenhum medicamento adicionado</span>
-                <span className={styles.notFoundSubtitle}>Insira as informações acima e adicione um medicamento</span>
+                <span className={styles.notFoundText}>
+                  Nenhum medicamento adicionado
+                </span>
+                <span className={styles.notFoundSubtitle}>
+                  Insira as informações acima e adicione um medicamento
+                </span>
               </div>
             </td>
           </tr>

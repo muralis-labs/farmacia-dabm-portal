@@ -21,18 +21,16 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const menus = useMemo(() => [
     { name: "Entrada", icon: "arrow_up", route: "/pages/entry" },
     { name: "Saída", icon: "arrow_down", route: "/pages/outflow" },
-    { name: "Estoque", icon: "bag", route: "/pages/stock" },
+    { name: "Estoque", icon: "bag", route: "/pages/stock", subMenuRoute: "/pages/movement" },
   ], []);
+
+  const selectedPath = useMemo(() => menus.find(menu => menu.route === pathname || menu?.subMenuRoute === pathname), [menus, pathname]);
 
   const mobileMenus = useMemo(() => [
     { name: "Dashboard", icon: "home", route: "/pages/entry" },
     { name: "Estoque", icon: "screen", route: "/pages/stock" },
     { name: "Calendário", icon: "calendar", route: "/pages" },
   ], []);
-
-  const pathTitle = useMemo(() => {
-    return pathname.includes("/pages/entry") ? "Atualizar entrada de estoque" : "Estoque";
-  }, [pathname]);
 
   const showScan = useMemo(() => {
     return pathname.includes("/pages/entry") && query;
@@ -43,7 +41,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   );
 
   const renderHeader = () => (
-    !pathname.includes("/pages/login") && !isMobile && <CustomHeader title={pathTitle} />
+    !pathname.includes("/pages/login") && <CustomHeader isMobile={isMobile} selectedPath={selectedPath} />
   );
 
   const renderMobileFooter = () => (
