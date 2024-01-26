@@ -11,19 +11,25 @@ import CustomDatePickerRange from "@/app/common/CustomDatePickerRange/index";
 import CustomButton from "@/app/common/CustomButton/index";
 import moment from "moment";
 import { useDeviceSelectors } from "react-device-detect";
+import { useHandleConvertList } from "@/app/hooks/useHandleConvertList";
+import CustomFloatButton from "@/app/common/CustomFloatButton/index";
 
 export default function Page() {
-  const getStockListService = useHandleGetStockList();
+  const getStockListService = useHandleGetStockList({ formatLabel: false });
+  const convertListService = useHandleConvertList();
   const {
     refetchData: getStockList,
     data: stockList,
     isLoading: stockListLoading,
   } = getStockListService;
+  const { fetchData: convertListFetchData, isLoading: convertListLoading } =
+    convertListService;
 
   const [selectors] = useDeviceSelectors(window.navigator.userAgent);
   const { isMobile } = selectors;
 
   const [limit, setLimit] = useState(10);
+  const [pageLimit, setPageLimit] = useState(10);
   const [showFilters, setShowFilters] = useState(false);
   const [selectedPage, setSelectedPage] = useState(1);
   const [search, setSearch] = useState("");
@@ -81,9 +87,14 @@ export default function Page() {
     getStockList({ page: 1, limit: 10 });
   };
 
-  const handleChangePage = (page: number) => {
+  const handleChangeLimit = (limit: number) => {
+    setPageLimit(limit);
+    handleChangePage(selectedPage, limit);
+  }
+
+  const handleChangePage = (page: number, limit: number) => {
     setSelectedPage(page);
-    getStockList({ page, limit: 10 });
+    getStockList({ page, limit });
   };
 
   const onChangeEntryDate = (dates: any) => {
@@ -143,6 +154,21 @@ export default function Page() {
     setShowFilters(false);
   };
 
+  const handleConvertList = async () => {
+    const rows = selectedRows.map((item) => ({
+      ...item,
+      expiration: moment(item.expiration).format("DD-MM-YYYY"),
+    }));
+    const res = await convertListFetchData({ rows, headers });
+
+    if (res) {
+      const link = document.createElement("a");
+      link.href = `data:application/octet-stream;base64, ${res}`;
+      link.download = `estoque-${moment().format("DD-MM-YYYY")}.xlsx`;
+      link.click();
+    }
+  };
+
   const renderMobileCard = (item) => {
     return (
       <div className={styles.card}>
@@ -184,13 +210,20 @@ export default function Page() {
     const next = selectedPage + 1;
 
     const bottom =
-      e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
+    Math.ceil(e.target.scrollHeight - e.target.scrollTop) === e.target.clientHeight;
+
+    console.log('stockList', stockList)
+    console.log('limit', limit)
+    console.log('e.target.scrollHeight', e.target.scrollHeight)
+    console.log('e.target.scrollTop', e.target.scrollTop)
+    console.log('e.target.scrollHeight - e.target.scrollTop', e.target.scrollHeight - e.target.scrollTop)
+    console.log('e.target.clientHeight', e.target.clientHeight)
 
     if (bottom && isMobile && limit < stockList.total) {
-      getStockList({limit: limit + 5, page: 1});
+
+      getStockList({ limit: limit + 5, page: 1 });
       setLimit(limit + 5);
     }
-
   };
 
   useEffect(() => {
@@ -210,6 +243,7 @@ export default function Page() {
 
   return (
     <>
+      {isMobile && <CustomFloatButton />}
       {!isMobile ? (
         <div className={styles.page}>
           <div className={styles.filters}>
@@ -305,7 +339,7 @@ export default function Page() {
               )}
             </div>
 
-            <div className={styles.icon}>
+            <div className={styles.icon} onClick={handleConvertList}>
               <Icon
                 icon="download"
                 color={colors.neutralColorGraySoftest}
@@ -325,15 +359,16 @@ export default function Page() {
           />
           {!stockListLoading && stockList.data && (
             <Pagination
-              onSelectPage={handleChangePage}
-              limit={10}
+              onSelectPage={(page) => handleChangePage(page, pageLimit)}
+              limit={pageLimit}
+              onChangeLimit={handleChangeLimit}
               total={stockList.total}
               selectedPage={selectedPage}
             />
           )}
         </div>
       ) : (
-        <div >
+        <div>
           {stockList.data && stockList.data.length > 0 && (
             <div onScroll={handleScroll} className={styles.listContainer}>
               {stockList.data.map((item) => renderMobileCard(item))}

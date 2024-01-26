@@ -9,6 +9,7 @@ type CustomButtonProps = {
   largeButton?: boolean,
   fullWidth?: boolean,
   danger?: boolean,
+  success?: boolean,
   onlyText?: boolean,
 }
 
@@ -19,9 +20,10 @@ export default function CustomButton({
   largeButton = false,
   fullWidth = false,
   danger = false,
+  success = false,
   onlyText = false,
 }: CustomButtonProps) {
   return (
-    <Button  disabled={disabled} onClick={onClick} className={`${styles.customButton} ${onlyText ? styles.onlyText : {}} ${danger ? styles.danger : {}} ${largeButton ? styles.largeButton : {}} ${fullWidth ? styles.fullWidth : {}}`} as="input" type="button" value={label} />
+    <Button  disabled={disabled} onClick={onClick} className={`${styles.customButton} ${onlyText ? styles.onlyText : {}} ${success ? styles.success : {}} ${danger ? styles.danger : {}} ${largeButton ? styles.largeButton : {}} ${fullWidth ? styles.fullWidth : {}}`} as="input" type="button" value={label} />
   );
 }

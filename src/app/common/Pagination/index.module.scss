@@ -25,8 +25,23 @@
     cursor: pointer;
 
     &.selected {
-        color: $neutral-color-gray-softest;
-        background-color: $brand-color-primary-medium;
+      color: $neutral-color-gray-softest;
+      background-color: $brand-color-primary-medium;
     }
+  }
+}
+
+.paginationDropdown button {
+  height: 28px !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: $neutral-color-gray-strongest;
+  background-color: $neutral-color-gray-softest;
+
+  &:hover,
+  &:active {
+    color: $neutral-color-gray-strongest;
+    background-color: $neutral-color-gray-softest;
   }
 }

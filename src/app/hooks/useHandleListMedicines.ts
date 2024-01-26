@@ -18,7 +18,6 @@ export const useHandleListMedicines = <T>() => {
   const fetchData = async (filter: StockListProps) => {
     setIsLoading(true);
     try {
-
       const limit = 20;
       let queryParams = "";
       const keys = Object.keys(filter);
@@ -37,8 +36,17 @@ export const useHandleListMedicines = <T>() => {
         `${BaseURL}/medicines?limit=${limit}${queryParams}`
       );
 
+      if (res) {
+        const list = res.data.map((medicine) => ({
+          ...medicine,
+          genericName: `${medicine.genericName} (${medicine.commercialName} ${medicine.dosage}${medicine.unitOfMeasurement})`,
+          commercialName: `(${medicine.genericName}) ${medicine.commercialName} ${medicine.dosage}${medicine.unitOfMeasurement}`,
+        }));
+        setData({data: list});
+      } else {
+        setData([]);
+      }
       setIsLoading(false);
-      setData(res ?? []);
     } catch (error: any) {
       setError(error);
     }

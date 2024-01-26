@@ -17,4 +17,8 @@
     &:hover {
         background-color: $brand-color-primary-dark-active;
     } 
+
+    &.mobileButton {
+        bottom: 64px !important;
+    }
 }

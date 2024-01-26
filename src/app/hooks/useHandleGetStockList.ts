@@ -18,7 +18,13 @@ type StockListProps = {
   commercialName?: string;
 };
 
-export const useHandleGetStockList = <T>() => {
+type HookProps = {
+  formatLabel?: boolean;
+};
+
+export const useHandleGetStockList = <T>({
+  formatLabel = false,
+}: HookProps) => {
   const [data, setData] = useState<any>({});
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
@@ -82,7 +88,16 @@ export const useHandleGetStockList = <T>() => {
         `${BaseURL}/stock?limit=${limit}&offset=${offset}${queryParams}`
       );
 
-      setData(res.data ?? []);
+
+      if (formatLabel && res) {
+        const list = res.data.data.map((stock) => ({
+          ...stock,
+          number: `${stock.number} (${stock.commercial_name} - ${stock.generic_name})`,
+        }));  
+        setData({ data: list });
+      } else {
+        setData(res.data ?? []);
+      }
       setIsLoading(false);
     } catch (error: any) {
       setError(error);

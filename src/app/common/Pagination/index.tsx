@@ -2,6 +2,7 @@ import React from "react";
 import Icon from "../icon/index";
 import colors from "@/app/sass/_variables.module.scss";
 import styles from "./index.module.scss";
+import { Dropdown } from "react-bootstrap";
 
 type PaginationProps = {
   selectedPage: number;
@@ -9,6 +10,7 @@ type PaginationProps = {
   limit: number;
   maxVisiblePages?: number;
   onSelectPage?: (e: any) => void;
+  onChangeLimit?: (e: any) => void;
 };
 
 const Pagination: React.FC<PaginationProps> = ({
@@ -17,8 +19,10 @@ const Pagination: React.FC<PaginationProps> = ({
   limit,
   maxVisiblePages = 5,
   onSelectPage = () => {},
+  onChangeLimit = () => {},
 }) => {
   const pageCount = Math.ceil(total / limit);
+  const limitValues = [10, 20, 40, 80, 100];
 
   const generatePageNumbers = () => {
     const pages: (number | string | null)[] = [];
@@ -148,6 +152,20 @@ const Pagination: React.FC<PaginationProps> = ({
           }
         />
       </div>
+
+      <Dropdown className={styles.paginationDropdown}>
+        <Dropdown.Toggle variant="success" id="dropdown-basic">
+          {limit}
+        </Dropdown.Toggle>
+
+        <Dropdown.Menu>
+          {limitValues.map((value, index) => (
+            <Dropdown.Item key={index} onClick={() => onChangeLimit(value)}>
+              {value}
+            </Dropdown.Item>
+          ))}
+        </Dropdown.Menu>
+      </Dropdown>
     </div>
   );
 };

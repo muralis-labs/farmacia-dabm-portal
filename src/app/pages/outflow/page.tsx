@@ -8,7 +8,6 @@ import CustomAutoComplete from "@/app/common/CustomAutoComplete/index";
 import { useHandleShelves } from "@/app/hooks/useHandleShelves";
 import { useHandleCreateShelf } from "@/app/hooks/useHandleCreateShelf";
 import { useHandleGetMedicine } from "@/app/hooks/useHandleGetMedicine";
-import { useHandleUploadMedicines } from "@/app/hooks/useHandleUploadMedicines";
 import { useHandleListMedicines } from "@/app/hooks/useHandleListMedicines";
 import { UNIT_OF_MEASUREMENT } from "@/app/constants/selectors";
 import CustomDatePicker from "@/app/common/CustomDatePicker/index";
@@ -16,8 +15,9 @@ import CustomButton from "@/app/common/CustomButton/index";
 import { useHandleGetStockList } from "@/app/hooks/useHandleGetStockList";
 import { useHandleUpdateStock } from "@/app/hooks/useHandleUpdateStock";
 import { useDeviceSelectors } from "react-device-detect";
-import colors from "@/app/sass/_variables.module.scss";
-import Icon from "@/app/common/icon/index";
+import Scan from "./components/Scan";
+import { useRouter, useSearchParams } from "next/navigation";
+import CustomModal from "@/app/common/CustomModal/index";
 
 interface Medicine {
   code: string;
@@ -65,24 +65,18 @@ export default function Page() {
   const getShelvesService = useHandleShelves();
   const createShelfService = useHandleCreateShelf();
   const getMedicineService = useHandleGetMedicine();
-  const uploadMedicinesService = useHandleUploadMedicines();
   const listMedicinesService = useHandleListMedicines();
-  const getStockListService = useHandleGetStockList();
+  const getStockListService = useHandleGetStockList({formatLabel: true});
   const updateStockService = useHandleUpdateStock();
 
   const {
     data: shelves,
     fetchData: getShelvesFetchData,
-    isLoading: getShelvesLoading,
   } = getShelvesService;
-  const { fetchData: createShelfData, isLoading: createShelfLoading } =
+  const { fetchData: createShelfData } =
     createShelfService;
   const { fetchData: getMedicineData, isLoading: getMedicineLoading } =
     getMedicineService;
-  const {
-    fetchData: uploadMedicinesFetchData,
-    isLoading: uploadMedicinesLoading,
-  } = uploadMedicinesService;
   const {
     data: listMedicinesData,
     refetchData: listMedicinesFetchData,
@@ -93,17 +87,19 @@ export default function Page() {
     data: stockList,
     isLoading: stockListLoading,
   } = getStockListService;
-
   const { fetchData: updateStockList, isLoading: updateStockLoading } =
     updateStockService;
 
+  const { push } = useRouter();
+  const searchParams = useSearchParams();
+  const scan = searchParams.get("scan");
   const [rows, setRows] = useState<Medicine[]>([]);
   const [code, setCode] = useState<string>("");
   const [commercialName, setCommercialName] = useState<string>("");
   const [genericName, setGenericName] = useState<string>("");
   const [unitOfMeasurement, setUnitOfMeasurement] = useState<string>("");
-  const [dosage, setDosage] = useState<number | undefined>();
-  const [quantity, setQuantity] = useState<number | undefined>();
+  const [dosage, setDosage] = useState<number | undefined>(0);
+  const [quantity, setQuantity] = useState<number | undefined>(0);
   const [batch, setBatch] = useState<string>("");
   const [expiration, setExpiration] = useState<Date | undefined>(undefined);
   const [pharmaceutical, setPharmaceutical] = useState<string>("");
@@ -113,6 +109,7 @@ export default function Page() {
   const [batchId, setBatchId] = useState<string | null>(null);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [selectors] = useDeviceSelectors(window.navigator.userAgent);
+  const [scanCode, setScanCode] = useState("");
   const { isMobile } = selectors;
 
   const headers = [
@@ -264,7 +261,7 @@ export default function Page() {
     setGenericName("");
     setCommercialName("");
     setUnitOfMeasurement("");
-    setDosage(undefined);
+    setDosage(0);
   };
 
   const validateForm = (): boolean => {
@@ -290,6 +287,32 @@ export default function Page() {
   };
 
   useEffect(() => {
+    let timer = setTimeout(() => {
+      if (scanCode) {
+        push("/pages/outflow");
+        setCode(scanCode);
+      }
+    }, 700);
+    return () => clearTimeout(timer);
+  }, [scanCode]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        getStockList({ page: 1, limit: 10, search: batch });
+      } catch (error) {
+        console.error("Erro ao obter dados do medicamento:", error);
+      }
+    };
+
+    const timer = setTimeout(() => {
+      fetchData();
+    }, 700);
+
+    return () => clearTimeout(timer);
+  }, [batch]);
+
+  useEffect(() => {
     const fetchData = async () => {
       try {
         const body = commercialName ? { commercialName } : { genericName };
@@ -310,6 +333,7 @@ export default function Page() {
     const fetchData = async () => {
       try {
         const data = await getMedicineData({ code });
+        getStockList({ page: 1, limit: 10, search: code });
 
         if (data) {
           setMedicineFields(data);
@@ -335,234 +359,215 @@ export default function Page() {
           isMobile ? styles.mobile : ""
         }`}
       >
-        <div className={`${styles.entryContainer} ${styles.flexColDirection}`}>
-          <div className={styles.topInfo}>
-            <h2 className={styles.title}>Informações do Medicamento</h2>
-            <div className={styles.divider} />
-          </div>
-          <Form className={styles.flexColDirection}>
-            <Row className={isMobile ? styles.mobileRow : ""}>
-              <Col>
-                <CustomInput
-                  value={code}
-                  onChange={(event) => setCode(event?.target.value)}
-                  id="code"
-                  label="Código de barras"
-                  placeholder="Digite o código de barras"
-                  showIcon
-                  icon="scan"
-                />
-              </Col>
-              <Col>
-                <CustomAutoComplete
-                  value={commercialName}
-                  id="commercial-name"
-                  label="Nome Comercial"
-                  placeholder="Digite o nome comercial do produto"
-                  allowCreation={false}
-                  disabled={getMedicineLoading}
-                  items={listMedicinesData.data}
-                  onSearchItem={(event) =>
-                    setCommercialName(event.target.value)
-                  }
-                  loadSearch={listMedicinesLoading}
-                  onItemSelect={(item) => handleSelectCode(item)}
-                  field="commercialName"
-                />
-              </Col>
-              <Col>
-                <CustomAutoComplete
-                  value={genericName}
-                  id="generic-name"
-                  label="Nome Genérico"
-                  placeholder="Digite o nome genérico do produto"
-                  allowCreation={false}
-                  disabled={getMedicineLoading}
-                  items={listMedicinesData.data as any}
-                  onSearchItem={(event) => setGenericName(event.target.value)}
-                  loadSearch={listMedicinesLoading}
-                  onItemSelect={(item) => handleSelectCode(item)}
-                  field="genericName"
-                />
-              </Col>
-            </Row>
-            <Row className={isMobile ? styles.mobileRow : ""}>
-              <Col>
-                <CustomAutoComplete
-                  value={unitOfMeasurement ?? ""}
-                  id="unitOfMeasurement"
-                  label="Unidade de medida"
-                  placeholder="Selecione a unidade de medida"
-                  disabled={true}
-                  items={UNIT_OF_MEASUREMENT as any}
-                  onItemSelect={(item) => setUnitOfMeasurement(item.name)}
-                  field="name"
-                />
-              </Col>
-              <Col>
-                <CustomInput
-                  value={dosage}
-                  onChange={(event) => setDosage(event.target.value)}
-                  disabled={true}
-                  id="dosage"
-                  type="number"
-                  label="Dosagem"
-                  placeholder="Dosagem do produto"
-                />
-              </Col>
-              <Col>
-                <CustomInput
-                  value={quantity}
-                  onChange={(event) => setQuantity(event.target.value)}
-                  id="quantity"
-                  type="number"
-                  label="Quantidade"
-                  placeholder="Quantidade de produtos"
-                />
-              </Col>
-            </Row>
-            <Row className={isMobile ? styles.mobileRow : ""}>
-              <Col>
-                <CustomAutoComplete
-                  value={batch}
-                  id="batch"
-                  label="Lote"
-                  placeholder="Digite o lote do produto"
-                  allowCreation={false}
-                  disabled={getMedicineLoading}
-                  items={stockList.data as any}
-                  onSearchItem={(event) => setBatch(event.target.value)}
-                  loadSearch={stockListLoading}
-                  onItemSelect={(item) => handleSelectBatch(item)}
-                  field="number"
-                />
-              </Col>
-              <Col>
-                <CustomDatePicker
-                  value={expiration}
-                  onChange={(date) => setExpiration(date)}
-                  id="expiration"
-                  label="Data de validade"
-                  placeholder="Data de validade"
-                  disabled={true}
-                />
-              </Col>
-              <Col>
-                <CustomInput
-                  value={pharmaceutical}
-                  onChange={(event) => setPharmaceutical(event.target.value)}
-                  id="pharmaceutical"
-                  label="Farmacêutico"
-                  placeholder="Nome do farmacêutico"
-                  disabled={true}
-                />
-              </Col>
-
-              <Col>
-                <CustomAutoComplete
-                  value={shelf ?? ""}
-                  id="shelf"
-                  label="Prateleira"
-                  placeholder="Selecione a prateleira"
-                  disabled={true}
-                  handleNewItem={(item) => handleCreateNewShelf(item)}
-                  items={shelves as any[]}
-                  field="name"
-                  onItemSelect={(item) => {
-                    setShelf(item.name);
-                    setShelfId(item.id);
-                  }}
-                />
-              </Col>
-            </Row>
-
-            {!isMobile && (
-              <Row xs={4} md={4} lg={4}>
+        {scan ? (
+          <Scan
+            isMobile={isMobile}
+            onScanMobile={(code) => setScanCode(code)}
+            onChange={(event) => setScanCode(event.target.value)}
+          />
+        ) : (
+          <div
+            className={`${styles.entryContainer} ${styles.flexColDirection}`}
+          >
+            <div className={styles.topInfo}>
+              <h2 className={styles.title}>Informações do Medicamento</h2>
+              <div className={styles.divider} />
+            </div>
+            <Form className={styles.flexColDirection}>
+              <Row className={isMobile ? styles.mobileRow : ""}>
                 <Col>
-                  <CustomButton
-                    key="enter-medicine"
-                    fullWidth
-                    disabled={validateForm()}
-                    onClick={updateMedicineList}
-                    danger
-                    label="Registrar saída de medicamento"
+                  <CustomInput
+                    value={code}
+                    onChange={(event) => setCode(event?.target.value)}
+                    id="code"
+                    label="Código de barras"
+                    placeholder="Digite o código de barras"
+                    showIcon
+                    icon="scan"
+                  />
+                </Col>
+                <Col>
+                  <CustomAutoComplete
+                    value={commercialName}
+                    id="commercial-name"
+                    label="Nome Comercial"
+                    placeholder="Digite o nome comercial do produto"
+                    allowCreation={false}
+                    disabled={getMedicineLoading}
+                    items={listMedicinesData.data}
+                    onSearchItem={(event) =>
+                      setCommercialName(event.target.value)
+                    }
+                    loadSearch={listMedicinesLoading}
+                    onItemSelect={(item) => handleSelectCode(item)}
+                    field="commercialName"
+                  />
+                </Col>
+                <Col>
+                  <CustomAutoComplete
+                    value={genericName}
+                    id="generic-name"
+                    label="Nome Genérico"
+                    placeholder="Digite o nome genérico do produto"
+                    allowCreation={false}
+                    disabled={getMedicineLoading}
+                    items={listMedicinesData.data as any}
+                    onSearchItem={(event) => setGenericName(event.target.value)}
+                    loadSearch={listMedicinesLoading}
+                    onItemSelect={(item) => handleSelectCode(item)}
+                    field="genericName"
                   />
                 </Col>
               </Row>
-            )}
-          </Form>
-          {!isMobile && (
-            <>
-              <CustomDataTable headers={headers} rows={rows} key="data-table" />
-              <div className={styles.options}>
-                <CustomButton
-                  disabled={rows.length <= 0 || uploadMedicinesLoading}
-                  onClick={() => setShowModal(true)}
-                  label="Registrar Saída"
-                  danger
+              <Row className={isMobile ? styles.mobileRow : ""}>
+                <Col>
+                  <CustomAutoComplete
+                    value={unitOfMeasurement ?? ""}
+                    id="unitOfMeasurement"
+                    label="Unidade de medida"
+                    placeholder="Selecione a unidade de medida"
+                    disabled={true}
+                    items={UNIT_OF_MEASUREMENT as any}
+                    onItemSelect={(item) => setUnitOfMeasurement(item.name)}
+                    field="name"
+                  />
+                </Col>
+                <Col>
+                  <CustomInput
+                    value={dosage}
+                    onChange={(event) => setDosage(event.target.value)}
+                    disabled={true}
+                    id="dosage"
+                    type="number"
+                    label="Dosagem"
+                    placeholder="Digite a dosagem"
+                  />
+                </Col>
+                <Col>
+                  <CustomInput
+                    value={quantity}
+                    onChange={(event) => setQuantity(event.target.value)}
+                    id="quantity"
+                    type="number"
+                    label="Quantidade"
+                    placeholder="Digite a quantidade"
+                  />
+                </Col>
+              </Row>
+              <Row className={isMobile ? styles.mobileRow : ""}>
+                <Col>
+                  <CustomAutoComplete
+                    value={batch}
+                    id="batch"
+                    label="Lote"
+                    placeholder="Digite o lote do produto"
+                    allowCreation={false}
+                    disabled={getMedicineLoading}
+                    items={stockList.data as any}
+                    onSearchItem={(event) => setBatch(event.target.value)}
+                    loadSearch={stockListLoading}
+                    onItemSelect={(item) => handleSelectBatch(item)}
+                    field="number"
+                  />
+                </Col>
+                <Col>
+                  <CustomDatePicker
+                    value={expiration}
+                    onChange={(date) => setExpiration(date)}
+                    id="expiration"
+                    label="Data de validade"
+                    placeholder="Data de validade"
+                    disabled={true}
+                  />
+                </Col>
+                <Col>
+                  <CustomInput
+                    value={pharmaceutical}
+                    onChange={(event) => setPharmaceutical(event.target.value)}
+                    id="pharmaceutical"
+                    label="Farmacêutico"
+                    placeholder="Nome do farmacêutico"
+                    disabled={true}
+                  />
+                </Col>
+
+                <Col>
+                  <CustomAutoComplete
+                    value={shelf ?? ""}
+                    id="shelf"
+                    label="Prateleira"
+                    placeholder="Selecione a prateleira"
+                    disabled={true}
+                    handleNewItem={(item) => handleCreateNewShelf(item)}
+                    items={shelves as any[]}
+                    field="name"
+                    onItemSelect={(item) => {
+                      setShelf(item.name);
+                      setShelfId(item.id);
+                    }}
+                  />
+                </Col>
+              </Row>
+
+              {!isMobile && (
+                <Row xs={4} md={4} lg={4}>
+                  <Col>
+                    <CustomButton
+                      key="enter-medicine"
+                      fullWidth
+                      disabled={validateForm()}
+                      onClick={updateMedicineList}
+                      danger
+                      label="Registrar saída de medicamento"
+                    />
+                  </Col>
+                </Row>
+              )}
+            </Form>
+            {!isMobile && (
+              <>
+                <h2 className={`${styles.title} ${styles.mt}`}>
+                  Medicamentos Adicionados
+                </h2>
+                <CustomDataTable
+                  isLoading={updateStockLoading}
+                  headers={headers}
+                  rows={rows}
+                  key="data-table"
                 />
-              </div>
-            </>
-          )}
-        </div>
+                <div className={styles.options}>
+                  <CustomButton
+                    disabled={rows.length <= 0}
+                    onClick={() => setShowModal(true)}
+                    label="Registrar Saída"
+                    danger
+                  />
+                </div>
+              </>
+            )}
+          </div>
+        )}
       </div>
-      {isMobile && (
+      {isMobile && !validateForm() && (
         <div className={styles.mobileOptions}>
           <CustomButton
-            onClick={handleUploadAllMedicinesMobile}
-            disabled={validateForm()}
+            onClick={() => setShowModal(true)}
             largeButton
             danger
             label="Registrar Saída"
           />
         </div>
       )}
-      <Modal
+
+      <CustomModal
         show={showModal}
+        confirmButton="Registrar saída"
+        description=" Tem certeza que deseja realizar a saída desses medicamentos? Essa
+      ação não poderá ser desfeita"
+        title="Saída de medicamentos"
         onHide={() => setShowModal(false)}
-        backdrop="static"
-        keyboard={false}
-        centered
-      >
-        <Modal.Body className={styles.modalBody}>
-          <div className={styles.modalHeader}>
-            <div className={styles.actionContainer}>
-              <Icon icon="trash" size={33} color={colors.volcanoStrong} />
-            </div>
-            <Icon
-              icon="close"
-              size={8}
-              color={colors.brandColorPrimaryDarkActive}
-            />
-          </div>
-
-          <div className={styles.modalInfo}>
-            <span className={styles.topLine}>Saída de medicamentos</span>
-            <span className={styles.bottomLine}>
-              Tem certeza que deseja realizar a saída desses medicamentos? Essa
-              ação não poderá ser desfeita
-            </span>
-          </div>
-
-          <div className={styles.modalOptions}>
-            <CustomButton
-              onClick={() => {
-                setShowModal(false);
-              }}
-              label="Cancelar"
-              onlyText
-            />
-            <CustomButton
-              onClick={() => {
-                handleUpdateStock();
-                setShowModal(false);
-              }}
-              label="Registrar saída"
-              danger
-            />
-          </div>
-        </Modal.Body>
-      </Modal>
+        handleConfirm={() => isMobile ? handleUploadAllMedicinesMobile() : handleUpdateStock()}
+      />
     </>
   );
 }

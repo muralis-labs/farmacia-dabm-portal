@@ -11,14 +11,20 @@ import CustomButton from "@/app/common/CustomButton/index";
 import moment from "moment";
 import { useDeviceSelectors } from "react-device-detect";
 import { useHandleGetMovementList } from "@/app/hooks/useHandleGetMovementList";
+import CustomAutoComplete from "@/app/common/CustomAutoComplete/index";
+import { MOVEMENTS_TYPES } from "@/app/constants/selectors";
+import { useHandleConvertList } from "@/app/hooks/useHandleConvertList";
 
 export default function Page() {
   const getMovementListService = useHandleGetMovementList();
+  const convertListService = useHandleConvertList();
   const {
     refetchData: getMovementList,
     data: movementList,
     isLoading: movementLoading,
   } = getMovementListService;
+  const { fetchData: convertListFetchData, isLoading: convertListLoading } =
+    convertListService;
 
   const [selectors] = useDeviceSelectors(window.navigator.userAgent);
   const { isMobile } = selectors;
@@ -27,7 +33,10 @@ export default function Page() {
   const [showFilters, setShowFilters] = useState(false);
   const [selectedPage, setSelectedPage] = useState(1);
   const [search, setSearch] = useState("");
-  const [searchMovementType, setSearchMovementType] = useState("");
+  const [searchMovementType, setSearchMovementType] = useState({
+    name: undefined,
+    value: undefined,
+  });
   const [searchGenericName, setSearchGenericName] = useState("");
   const [searchCommercialName, setSearchCommercialName] = useState("");
   const [searchPharmaceutical, setSearchPharmaceutical] = useState("");
@@ -37,6 +46,7 @@ export default function Page() {
   const [endExpirationDate, setEndExpirationDate] = useState(null);
   const [selectedRows, setSelectedRows] = useState([]);
   const [key, setKey] = useState(Math.random());
+  const [pageLimit, setPageLimit] = useState(10);
   const containerRef = useRef<any>(null);
 
   const headers = [
@@ -75,17 +85,17 @@ export default function Page() {
     {
       title: "Atividade",
       field: "movement_type",
-      showIcon: true
+      showIcon: true,
     },
     {
       title: "Data",
       field: "updated_at",
-    }
+    },
   ];
 
   const clearFilters = () => {
     setSearch("");
-    setSearchMovementType("");
+    setSearchMovementType({ name: undefined, value: undefined });
     setSearchCommercialName("");
     setSearchGenericName("");
     setStartEntryDate(null);
@@ -96,9 +106,14 @@ export default function Page() {
     getMovementList({ page: 1, limit: 10 });
   };
 
-  const handleChangePage = (page: number) => {
+  const handleChangeLimit = (limit: number) => {
+    setPageLimit(limit);
+    handleChangePage(selectedPage, limit);
+  }
+
+  const handleChangePage = (page: number, limit: number) => {
     setSelectedPage(page);
-    getMovementList({ page, limit: 10 });
+    getMovementList({ page, limit });
   };
 
   const onChangeEntryDate = (dates: any) => {
@@ -114,7 +129,11 @@ export default function Page() {
   };
 
   const handleClickOutside = (event: MouseEvent) => {
-    if (showFilters && containerRef.current && !containerRef.current.contains(event.target)) {
+    if (
+      showFilters &&
+      containerRef.current &&
+      !containerRef.current.contains(event.target)
+    ) {
       setShowFilters(false);
     }
   };
@@ -131,6 +150,26 @@ export default function Page() {
   const handleSelectAllRows = () => {
     if (selectedRows.length === movementList.data.length) setSelectedRows([]);
     else setSelectedRows(movementList.data);
+  };
+
+  const handleConvertList = async () => {
+    const rows =
+      selectedRows.length > 0
+        ? selectedRows.map((item) => ({
+            ...item,
+            expiration: moment(item.expiration).format("DD-MM-YYYY"),
+            updated_at: moment(item.updated_at).format("DD-MM-YYYY"),
+            movement_type: item.movement_type === "entry" ? "Entrada" : "Saída",
+          }))
+        : [];
+    const res = await convertListFetchData({ rows, headers });
+
+    if (res) {
+      const link = document.createElement("a");
+      link.href = `data:application/octet-stream;base64, ${res}`;
+      link.download = `movimentação-${moment().format("DD-MM-YYYY")}.xlsx`;
+      link.click();
+    }
   };
 
   const getMovementListWithFilters = () => {
@@ -153,7 +192,7 @@ export default function Page() {
       pharmaceutical: searchPharmaceutical,
       genericName: searchGenericName,
       commercialName: searchCommercialName,
-      movementType: searchMovementType,
+      movementType: searchMovementType?.value ?? "",
     };
     getMovementList(filter as any);
     setShowFilters(false);
@@ -203,10 +242,9 @@ export default function Page() {
       e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
 
     if (bottom && isMobile && limit < movementList.total) {
-      getMovementList({limit: limit + 5, page: 1});
+      getMovementList({ limit: limit + 5, page: 1 });
       setLimit(limit + 5);
     }
-
   };
 
   useEffect(() => {
@@ -266,18 +304,14 @@ export default function Page() {
                     startDate={startEntryDate as any}
                     endDate={endEntryDate as any}
                   />
-                  <CustomInput
+                  <CustomAutoComplete
+                    value={searchMovementType?.name ?? ""}
                     id="searchMovementType"
-                    placeholder="Buscar tipo de movimentação"
                     label="Tipo de movimentação"
-                    onChange={(event) =>
-                      setSearchMovementType(event.target.value)
-                    }
-                    value={searchMovementType}
-                    showIcon
-                    icon="lupe"
-                    iconSize={15}
-                    iconColor={colors.neutralColorGrayStrong}
+                    placeholder="Selecione a unidade de medida"
+                    items={MOVEMENTS_TYPES as any}
+                    onItemSelect={(item) => setSearchMovementType(item)}
+                    field="name"
                   />
                   <CustomInput
                     id="searchGenericName"
@@ -334,7 +368,7 @@ export default function Page() {
               )}
             </div>
 
-            <div className={styles.icon}>
+            <div className={styles.icon} onClick={handleConvertList}>
               <Icon
                 icon="download"
                 color={colors.neutralColorGraySoftest}
@@ -354,15 +388,16 @@ export default function Page() {
           />
           {!movementLoading && movementList.data && (
             <Pagination
-              onSelectPage={handleChangePage}
-              limit={10}
+              onSelectPage={(page) => handleChangePage(page, pageLimit)}
+              limit={pageLimit}
+              onChangeLimit={handleChangeLimit}
               total={movementList.total}
               selectedPage={selectedPage}
             />
           )}
         </div>
       ) : (
-        <div >
+        <div>
           {movementList.data && movementList.data.length > 0 && (
             <div onScroll={handleScroll} className={styles.listContainer}>
               {movementList.data.map((item) => renderMobileCard(item))}

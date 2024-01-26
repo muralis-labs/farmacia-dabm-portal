@@ -1,0 +1,61 @@
+@import "@/app/sass/variables";
+
+.modalBody {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+
+  .modalHeader {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    position: relative;
+    height: 40px;
+    padding-right: 16px;
+
+    .actionContainer {
+      width: 88px;
+      height: 88px;
+      border-radius: 50%;
+      display: flex;
+      box-shadow: 0px 8px 20px 0px rgba(0, 0, 0, 0.14);
+      box-shadow: 0px 4px 18px 1px rgba(0, 0, 0, 0.1);
+      justify-content: center;
+      align-items: center;
+      background-color: $volcano-soft;
+      position: absolute;
+      bottom: 10px;
+      left: 0px;
+
+      &.confirm {
+        background-color: $green-medium !important;
+      }
+    }
+  }
+
+  .modalInfo {
+    color: $neutral-color-gray-strongest;
+
+    .topLine {
+      display: flex;
+      font-size: $font-size-md;
+      font-weight: $font-weight-medium;
+      line-height: 27px;
+      letter-spacing: 0em;
+      text-align: left;
+    }
+
+    .bottomLine {
+      font-size: $font-size-xs;
+      font-weight: $font-weight-regular;
+      line-height: 24px;
+      letter-spacing: 0em;
+      text-align: left;
+    }
+  }
+
+  .modalOptions {
+    display: flex;
+    justify-content: flex-end;
+  }
+}

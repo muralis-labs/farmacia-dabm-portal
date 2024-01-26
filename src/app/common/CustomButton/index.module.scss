@@ -39,6 +39,21 @@
     }
   }
 
+  &.success {
+    border-color: $green-dark;
+    background-color: $green-dark;
+
+    &:hover {
+      border-color: $green-darkest;
+      background-color: $green-darkest;
+    }
+
+    &:active {
+      border-color: $green-darkest-active;
+      background-color: $green-darkest-active;
+    }
+  }
+
   &.onlyText {
     border: unset;
     color: $brand-color-primary-darkest !important;

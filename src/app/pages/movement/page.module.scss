@@ -1,5 +1,11 @@
 @import "@/app/sass/variables";
 
+.page {
+  height: 90%;
+  padding: 16px;
+  overflow-y: auto;
+}
+
 .filters {
   display: flex;
   align-items: center;
