@@ -460,7 +460,9 @@ export default function Entry() {
                       fullWidth
                       disabled={validateForm() || getShelvesService.isLoading}
                       onClick={handleAddMedicine}
-                      label="Adicionar Medicamento"
+                      label={
+                        edit ? "Editar Medicamento" : "Adicionar Medicamento"
+                      }
                     />
                   </Col>
                 </Row>
@@ -500,7 +502,11 @@ export default function Entry() {
       ação não poderá ser desfeita"
               title="Entrada de medicamentos"
               onHide={() => setShowModal(false)}
-              handleConfirm={() => isMobile ? handleUploadAllMedicinesMobile() : handleUploadAllMedicines()}
+              handleConfirm={() =>
+                isMobile
+                  ? handleUploadAllMedicinesMobile()
+                  : handleUploadAllMedicines()
+              }
             />
           </div>
         )}

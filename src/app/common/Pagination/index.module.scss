@@ -36,12 +36,14 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  color: $neutral-color-gray-strongest;
-  background-color: $neutral-color-gray-softest;
+  color: $neutral-color-gray-strongest !important;
+  background-color: $neutral-color-gray-softest !important;
 
   &:hover,
-  &:active {
-    color: $neutral-color-gray-strongest;
-    background-color: $neutral-color-gray-softest;
+  &:active,
+  &.show,
+  .show {
+    color: $neutral-color-gray-strongest !important;
+    background-color: $neutral-color-gray-softest !important;
   }
 }

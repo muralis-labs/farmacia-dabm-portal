@@ -30,20 +30,41 @@ export default function CustomHeader({
 
   return (
     <>
-      <div className={`${styles.header} ${isMobile ? styles.mobileHeader : {}} ${isMobile && isScanning? styles.hideHeader : {}}`}>
+      <div
+        className={`${styles.header} ${isMobile ? styles.mobileHeader : {}} ${
+          isMobile && isScanning ? styles.hideHeader : {}
+        }`}
+      >
+        {pathname.includes("/pages/stock") && isMobile && (
+          <div className={styles.user}>
+            <Image className={styles.formImage} src={logo} alt="form Logo" />
+          </div>
+        )}
+
         <h1 className={styles.title}>{selectedPath.name}</h1>
 
-        <div className={styles.user}>
-          <Image className={styles.formImage} src={logo} alt="form Logo" />
-          {!isMobile && <span>{user.data.name}</span>}
-        </div>
+        {pathname.includes("/pages/stock") && isMobile ? (
+          <div
+            className={styles.filterButton}
+            onClick={() => push("/pages/stock?filter=true")}
+          >
+            <Icon icon="funil" size={12} />
+          </div>
+        ) : (
+          <div className={styles.user}>
+            <Image className={styles.formImage} src={logo} alt="form Logo" />
+            {!isMobile && <span>{user.data.name}</span>}
+          </div>
+        )}
       </div>
       {isMobile &&
         (pathname.includes("/pages/entry") ||
           pathname.includes("/pages/outflow")) && (
           <Nav
             defaultActiveKey="entry"
-            className={`${styles.navOptions} ${styles.mobileNav} ${isMobile && isScanning? styles.hideHeader : {}}`}
+            className={`${styles.navOptions} ${styles.mobileNav} ${
+              isMobile && isScanning ? styles.hideHeader : {}
+            }`}
             variant="underline"
           >
             <Nav.Item onClick={() => push("/pages/entry")}>

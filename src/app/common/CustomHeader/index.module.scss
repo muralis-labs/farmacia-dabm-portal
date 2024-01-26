@@ -66,6 +66,16 @@
 .mobileHeader {
   height: 64px;
 
+  div {
+    width: 50px;
+  }
+
+  .filterButton {
+    display: flex;
+    justify-content: center;
+    cursor: pointer;
+  }
+
   .title {
     font-size: $font-size-xs;
     font-weight: $font-weight-medium;

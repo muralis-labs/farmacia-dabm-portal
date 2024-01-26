@@ -109,7 +109,7 @@ export default function Page() {
   const handleChangeLimit = (limit: number) => {
     setPageLimit(limit);
     handleChangePage(selectedPage, limit);
-  }
+  };
 
   const handleChangePage = (page: number, limit: number) => {
     setSelectedPage(page);
@@ -150,6 +150,109 @@ export default function Page() {
   const handleSelectAllRows = () => {
     if (selectedRows.length === movementList.data.length) setSelectedRows([]);
     else setSelectedRows(movementList.data);
+  };
+
+  const renderTagFilters = () => {
+    return (
+      <div className={styles.tagsContainer}>
+        {search && (
+          <div className={styles.tag}>
+            {search}
+            <Icon
+              icon="close"
+              size={8}
+              onClick={() => {
+                setSearch("");
+                getMovementListWithFilters();
+              }}
+            />
+          </div>
+        )}
+        {searchMovementType?.name && (
+          <div className={styles.tag}>
+            {searchMovementType.name}
+            <Icon
+              icon="close"
+              size={8}
+              onClick={() => {
+                setSearchMovementType({ name: undefined, value: undefined });
+                getMovementListWithFilters();
+              }}
+            />
+          </div>
+        )}
+        {searchGenericName && (
+          <div className={styles.tag}>
+            {searchGenericName}
+            <Icon
+              icon="close"
+              size={8}
+              onClick={() => {
+                setSearchGenericName("");
+                getMovementListWithFilters();
+              }}
+            />
+          </div>
+        )}{" "}
+        {searchCommercialName && (
+          <div
+            className={styles.tag}
+            onClick={() => {
+              setSearchCommercialName("");
+              getMovementListWithFilters();
+            }}
+          >
+            {searchCommercialName}
+            <Icon icon="close" size={8} />
+          </div>
+        )}{" "}
+        {searchPharmaceutical && (
+          <div
+            className={styles.tag}
+            onClick={() => {
+              setSearchPharmaceutical("");
+              getMovementListWithFilters();
+            }}
+          >
+            {searchPharmaceutical}
+            <Icon icon="close" size={8} />
+          </div>
+        )}
+        {moment(startEntryDate).isValid() && moment(endEntryDate).isValid() && (
+          <div className={styles.tag}>
+            {`${moment(startEntryDate).format("DD/MM/YYYY")} - ${moment(
+              endEntryDate
+            ).format("DD/MM/YYYY")}`}
+            <Icon
+              icon="close"
+              size={8}
+              onClick={() => {
+                setStartEntryDate(null);
+                setEndEntryDate(null);
+                getMovementListWithFilters();
+              }}
+            />
+          </div>
+        )}
+        {moment(startExpirationDate).isValid() &&
+          moment(endExpirationDate).isValid() && (
+            <div className={styles.tag}>
+              {`${moment(startExpirationDate).format("DD/MM/YYYY")} - ${moment(
+                endExpirationDate
+              ).format("DD/MM/YYYY")}`}
+              <Icon
+                icon="close"
+                size={8}
+                onClick={() => {
+                  setStartExpirationDate(null);
+                  setEndExpirationDate(null);
+                  getMovementListWithFilters();
+                }}
+              />
+            </div>
+          )}
+      </div>
+    );
   };
 
   const handleConvertList = async () => {
@@ -265,7 +368,7 @@ export default function Page() {
   return (
     <>
       {!isMobile ? (
-        <div>
+        <div className={styles.page}>
           <div className={styles.filters}>
             <CustomInput
               id="search"
@@ -376,6 +479,7 @@ export default function Page() {
               />
             </div>
           </div>
+          {renderTagFilters()}
           <CustomDataTable
             key={key}
             selection

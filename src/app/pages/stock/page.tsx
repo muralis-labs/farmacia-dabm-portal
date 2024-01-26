@@ -13,6 +13,7 @@ import moment from "moment";
 import { useDeviceSelectors } from "react-device-detect";
 import { useHandleConvertList } from "@/app/hooks/useHandleConvertList";
 import CustomFloatButton from "@/app/common/CustomFloatButton/index";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function Page() {
   const getStockListService = useHandleGetStockList({ formatLabel: false });
@@ -27,6 +28,7 @@ export default function Page() {
 
   const [selectors] = useDeviceSelectors(window.navigator.userAgent);
   const { isMobile } = selectors;
+  const { push } = useRouter();
 
   const [limit, setLimit] = useState(10);
   const [pageLimit, setPageLimit] = useState(10);
@@ -43,6 +45,8 @@ export default function Page() {
   const [selectedRows, setSelectedRows] = useState([]);
   const [key, setKey] = useState(Math.random());
   const containerRef = useRef<any>(null);
+  const searchParams = useSearchParams();
+  const showFilter = searchParams.get("filter");
 
   const headers = [
     {
@@ -90,7 +94,7 @@ export default function Page() {
   const handleChangeLimit = (limit: number) => {
     setPageLimit(limit);
     handleChangePage(selectedPage, limit);
-  }
+  };
 
   const handleChangePage = (page: number, limit: number) => {
     setSelectedPage(page);
@@ -152,6 +156,7 @@ export default function Page() {
     };
     getStockList(filter as any);
     setShowFilters(false);
+    isMobile && push("/pages/stock");
   };
 
   const handleConvertList = async () => {
@@ -206,21 +211,102 @@ export default function Page() {
     );
   };
 
+  const renderTagFilters = () => {
+    return (
+      <div className={styles.tagsContainer}>
+        {search && (
+          <div className={styles.tag}>
+            {search}
+            <Icon
+              icon="close"
+              size={8}
+              onClick={() => {
+                setSearch("");
+                getStockListWithFilters();
+              }}
+            />
+          </div>
+        )}
+        {searchGenericName && (
+          <div className={styles.tag}>
+            {searchGenericName}
+            <Icon
+              icon="close"
+              size={8}
+              onClick={() => {
+                setSearchGenericName("");
+                getStockListWithFilters();
+              }}
+            />
+          </div>
+        )}{" "}
+        {searchCommercialName && (
+          <div
+            className={styles.tag}
+            onClick={() => {
+              setSearchCommercialName("");
+              getStockListWithFilters();
+            }}
+          >
+            {searchCommercialName}
+            <Icon icon="close" size={8} />
+          </div>
+        )}{" "}
+        {searchPharmaceutical && (
+          <div
+            className={styles.tag}
+            onClick={() => {
+              setSearchPharmaceutical("");
+              getStockListWithFilters();
+            }}
+          >
+            {searchPharmaceutical}
+            <Icon icon="close" size={8} />
+          </div>
+        )}
+        {moment(startEntryDate).isValid() && moment(endEntryDate).isValid() && (
+          <div className={styles.tag}>
+            {`${moment(startEntryDate).format("DD/MM/YYYY")} - ${moment(
+              endEntryDate
+            ).format("DD/MM/YYYY")}`}
+            <Icon
+              icon="close"
+              size={8}
+              onClick={() => {
+                setStartEntryDate(null);
+                setEndEntryDate(null);
+                getStockListWithFilters();
+              }}
+            />
+          </div>
+        )}
+        {moment(startExpirationDate).isValid() &&
+          moment(endExpirationDate).isValid() && (
+            <div className={styles.tag}>
+              {`${moment(startExpirationDate).format("DD/MM/YYYY")} - ${moment(
+                endExpirationDate
+              ).format("DD/MM/YYYY")}`}
+              <Icon
+                icon="close"
+                size={8}
+                onClick={() => {
+                  setStartExpirationDate(null);
+                  setEndExpirationDate(null);
+                  getStockListWithFilters();
+                }}
+              />
+            </div>
+          )}
+      </div>
+    );
+  };
+
   const handleScroll = (e) => {
-    const next = selectedPage + 1;
-
     const bottom =
-    Math.ceil(e.target.scrollHeight - e.target.scrollTop) === e.target.clientHeight;
-
-    console.log('stockList', stockList)
-    console.log('limit', limit)
-    console.log('e.target.scrollHeight', e.target.scrollHeight)
-    console.log('e.target.scrollTop', e.target.scrollTop)
-    console.log('e.target.scrollHeight - e.target.scrollTop', e.target.scrollHeight - e.target.scrollTop)
-    console.log('e.target.clientHeight', e.target.clientHeight)
+      Math.ceil(e.target.scrollHeight - e.target.scrollTop) ===
+      e.target.clientHeight;
 
     if (bottom && isMobile && limit < stockList.total) {
-
       getStockList({ limit: limit + 5, page: 1 });
       setLimit(limit + 5);
     }
@@ -235,7 +321,7 @@ export default function Page() {
 
   useEffect(() => {
     let timer = setTimeout(() => {
-      getStockListWithFilters();
+      !isMobile && getStockListWithFilters();
     }, 700);
 
     return () => clearTimeout(timer);
@@ -243,7 +329,84 @@ export default function Page() {
 
   return (
     <>
-      {isMobile && <CustomFloatButton />}
+      {isMobile && showFilter && (
+        <div className={`${styles.filterForm} ${styles.mobile}`}>
+          <div className={styles.filterText}>
+            <div className={styles.alignDiv} />
+            <h2>Filtros</h2>
+            <div
+              className={styles.filterButton}
+              onClick={() => push("/pages/stock")}
+            >
+              <Icon icon="close" size={12} />
+            </div>
+          </div>
+          <CustomDatePickerRange
+            id="entryDate"
+            label="Data de atendimento"
+            onChange={onChangeEntryDate}
+            startDate={startEntryDate as any}
+            endDate={endEntryDate as any}
+          />
+          <CustomInput
+            id="search"
+            placeholder="Buscar"
+            label="Buscar"
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+            showIcon
+            icon="lupe"
+            iconSize={18}
+            iconColor={colors.neutralColorGrayStrong}
+          />
+          <CustomInput
+            id="searchGenericName"
+            placeholder="Buscar nome genérico"
+            label="Nome genérico"
+            onChange={(event) => setSearchGenericName(event.target.value)}
+            value={searchGenericName}
+            showIcon
+            icon="lupe"
+            iconSize={15}
+            iconColor={colors.neutralColorGrayStrong}
+          />
+          <CustomInput
+            id="searchCommercialName"
+            placeholder="Buscar Nome comercial"
+            label="Nome comercial"
+            onChange={(event) => setSearchCommercialName(event.target.value)}
+            value={searchCommercialName}
+            showIcon
+            icon="lupe"
+            iconSize={15}
+            iconColor={colors.neutralColorGrayStrong}
+          />
+          <CustomInput
+            id="searchPharmaceutical"
+            placeholder="Buscar farmacêutico"
+            label="Farmacêutico"
+            onChange={(event) => setSearchPharmaceutical(event.target.value)}
+            value={searchPharmaceutical}
+            showIcon
+            icon="lupe"
+            iconSize={15}
+            iconColor={colors.neutralColorGrayStrong}
+          />
+          <CustomDatePickerRange
+            id="expirationDate"
+            label="Data de validade"
+            onChange={onChangeExpirationDate}
+            startDate={startExpirationDate as any}
+            endDate={endExpirationDate as any}
+          />
+          <CustomButton
+            onClick={getStockListWithFilters}
+            label="Aplicar"
+            fullWidth
+          />
+        </div>
+      )}
+      {isMobile && !showFilter && <CustomFloatButton />}
       {!isMobile ? (
         <div className={styles.page}>
           <div className={styles.filters}>
@@ -258,7 +421,6 @@ export default function Page() {
               iconSize={18}
               iconColor={colors.neutralColorGrayStrong}
             />
-
             <div className={styles.filterButton}>
               <div
                 className={styles.icon}
@@ -347,6 +509,7 @@ export default function Page() {
               />
             </div>
           </div>
+          {renderTagFilters()}
           <CustomDataTable
             key={key}
             selection
