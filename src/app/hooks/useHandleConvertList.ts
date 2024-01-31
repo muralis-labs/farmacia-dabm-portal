@@ -1,13 +1,14 @@
 import axios from "axios";
-import { BaseURL } from "../constants/config";
+import { BaseURL, environment } from "../constants/config";
 import { useState } from "react";
+import { redirect } from "next/navigation";
 
 type convertListBody = {
   rows: any[];
   headers: {
     title: string;
     field: string;
-  }[]
+  }[];
 };
 
 export const useHandleConvertList = () => {
@@ -17,10 +18,26 @@ export const useHandleConvertList = () => {
   const fetchData = async (data: convertListBody) => {
     setIsLoading(true);
     try {
-      const res = await axios.post(`${BaseURL}/convert`, data);
+      const user = localStorage.getItem(`user_${environment}`)
+        ? JSON.parse(localStorage.getItem(`user_${environment}`))
+        : undefined;
+
+      if (!user) {
+        redirect("/");
+      }
+
+      const headers = {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${user.token}`,
+      };
+
+      const res = await axios.post(`${BaseURL}/convert`, data, { headers });
 
       return res.data;
     } catch (error: any) {
+      if (error?.response?.status === 401) {
+        redirect("/");
+      }
       setError(error);
     } finally {
       setIsLoading(false);

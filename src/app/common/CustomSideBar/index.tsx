@@ -74,7 +74,7 @@ export default function CustomSideBar({
 
       {menus && menus.length > 0 && (
         <div className={styles.menus}>
-          {menus.map((item, index) => renderMenu(item, index))}
+          {menus.map((item, index) => !item.hide && renderMenu(item, index))}
         </div>
       )}
     </div>

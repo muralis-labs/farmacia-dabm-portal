@@ -11,7 +11,8 @@ interface Stock {
   unitOfMeasurement: string;
   shelf: string;
   medicineId: string | null;
-  batchId: string | null;
+  batchId?: string | null;
+  batch_id?: string | null;
   shelfId: string | null;
   dosage: number | undefined;
   pharmaceutical: string;
@@ -20,7 +21,7 @@ interface Stock {
   entry: Date;
 }
 
-export const useHandleUpdateStock = () => {
+export const useHandleDiscardBatch = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
@@ -42,14 +43,12 @@ export const useHandleUpdateStock = () => {
       };
 
       const patchRequests = data.map((batch) =>
-        axios.patch(
-          `${BaseURL}/batch`,
-          {
-            id: batch.batchId,
-            quantity: batch.quantity,
-          },
-          {headers}
-        )
+      axios.delete(`${BaseURL}/batch`, {
+        headers: headers,
+        data: {
+          id: batch.batch_id ?? batch.batchId,
+        },
+      })
       );
 
       await Promise.all(patchRequests);

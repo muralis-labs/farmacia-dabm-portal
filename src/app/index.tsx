@@ -24,6 +24,8 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     { name: "Saída", icon: "arrow_down", route: "/pages/outflow" },
     { name: "Estoque", icon: "bag", route: "/pages/stock" },
     { name: "Movimentação", icon: "battery", route: "/pages/movement" },
+    { name: "Calendário", icon: "calendar", route: "/pages/calendar" },
+    { name: "Perfil", icon: "", route: "/pages/user", hide: true },
   ], []);
 
   const selectedPath = useMemo(() => menus.find(menu => menu.route === pathname || menu?.subMenuRoute === pathname), [menus, pathname]);

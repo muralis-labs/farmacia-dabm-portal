@@ -24,6 +24,13 @@
     gap: 8px;
     border: 1px solid $neutral-color-gray-light;
     border-radius: 16px;
+    cursor: pointer;
+
+    &.selected {
+      background-color: $hand-off-frame-base;
+      border: unset !important;
+    }
+
     font-size: $font-size-xxs;
     font-weight: $font-weight-regular;
     line-height: 12px;
@@ -85,7 +92,8 @@
   }
 
   .user {
-    border: unset;
+    border: unset !important;
+    background-color: unset !important;
   }
 
   a {

@@ -1,8 +1,8 @@
-'use client'
+"use client";
 import axios from "axios";
 import { environment, BaseURL } from "../constants/config";
 import { useState } from "react";
-import {  useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 type loginProps = {
   login: string;
@@ -20,10 +20,12 @@ export const useHandleLogin = <T>() => {
 
       if (res.data) {
         localStorage.setItem(`user_${environment}`, JSON.stringify(res.data));
-        push('/pages/entry');
+        push("/pages/entry");
       }
-
     } catch (error: any) {
+      if (error?.response?.status === 401) {
+        push("/");
+      }
       setError(error);
     }
     setIsLoading(false);

@@ -3,14 +3,26 @@ import { useEffect } from "react";
 import axios from "axios";
 import { BaseURL, environment } from "../constants/config";
 import { useState } from "react";
+import moment from "moment";
 import { useRouter } from "next/navigation";
 
 type StockListProps = {
+  page: number;
+  limit: number;
+  search?: string;
+  expirationDateStart?: Date;
+  expirationDateEnd?: Date;
   genericName?: string;
   commercialName?: string;
 };
 
-export const useHandleListMedicines = <T>() => {
+type HookProps = {
+  formatLabel?: boolean;
+};
+
+export const useHandleGetCalendarList = <T>({
+  formatLabel = false,
+}: HookProps) => {
   const [data, setData] = useState<any>({});
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
@@ -32,11 +44,17 @@ export const useHandleListMedicines = <T>() => {
         Authorization: `Bearer ${user.token}`,
       };
 
-      const limit = 20;
+      const page = filter.page ?? 1;
+      const limit = filter.limit ?? 10;
+      const offset = page * limit - limit;
       let queryParams = "";
       const keys = Object.keys(filter);
 
       for (const key of keys) {
+        if (key === "search" && filter.search) {
+          queryParams += `&search=${filter.search}`;
+        }
+
         if (key === "genericName" && filter.genericName) {
           queryParams += `&genericName=${filter.genericName}`;
         }
@@ -44,22 +62,36 @@ export const useHandleListMedicines = <T>() => {
         if (key === "commercialName" && filter.commercialName) {
           queryParams += `&commercialName=${filter.commercialName}`;
         }
+
+        if (
+          key === "expirationDateStart" &&
+          moment(filter.expirationDateStart).isValid()
+        ) {
+          queryParams += `&expirationDateStart=${filter.expirationDateStart}`;
+        }
+
+        if (
+          key === "expirationDateEnd" &&
+          moment(filter.expirationDateEnd).isValid()
+        ) {
+          queryParams += `&expirationDateEnd=${filter.expirationDateEnd}`;
+        }
       }
 
       const res = await axios.get(
-        `${BaseURL}/medicines?limit=${limit}${queryParams}`,
+        `${BaseURL}/stock?limit=${limit}&offset=${offset}${queryParams}`,
         { headers }
       );
 
-      if (res) {
-        const list = res.data.map((medicine) => ({
-          ...medicine,
-          genericName: `${medicine.genericName} (${medicine.commercialName} ${medicine.dosage}${medicine.unitOfMeasurement})`,
-          commercialName: `(${medicine.genericName}) ${medicine.commercialName} ${medicine.dosage}${medicine.unitOfMeasurement}`,
+      if (formatLabel && res) {
+        const list = res.data.data.map((stock) => ({
+          ...stock,
+          number: `${stock.number} (${stock.commercial_name} - ${stock.generic_name})`,
         }));
         setData({ data: list });
       } else {
-        setData([]);
+        const list = res.data.data.filter((stock) => !stock.discarded && stock);
+        setData(list.length > 0 ? {data: list} : []);
       }
       setIsLoading(false);
     } catch (error: any) {
@@ -76,7 +108,12 @@ export const useHandleListMedicines = <T>() => {
   };
 
   useEffect(() => {
-    fetchData({});
+    fetchData({
+      page: 1,
+      limit: 999,
+      expirationDateStart: moment().startOf("month").format('YYYY-MM-DDTHH:mm:ss.SSS[Z]'),
+      expirationDateEnd: moment().endOf("month").format('YYYY-MM-DDTHH:mm:ss.SSS[Z]'),
+    });
   }, []);
 
   return { data, isLoading, error, refetchData };

@@ -1,9 +1,10 @@
 "use client";
 import { useEffect } from "react";
 import axios from "axios";
-import { BaseURL } from "../constants/config";
+import { BaseURL, environment } from "../constants/config";
 import { useState } from "react";
 import moment from "moment";
+import { useRouter } from "next/navigation";
 
 type StockListProps = {
   page: number;
@@ -28,10 +29,24 @@ export const useHandleGetStockList = <T>({
   const [data, setData] = useState<any>({});
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
+  const { push } = useRouter();
 
   const fetchData = async (filter: StockListProps) => {
     setIsLoading(true);
     try {
+      const user = localStorage.getItem(`user_${environment}`)
+        ? JSON.parse(localStorage.getItem(`user_${environment}`))
+        : undefined;
+
+      if (!user) {
+        push("/");
+      }
+
+      const headers = {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${user.token}`,
+      };
+
       const page = filter.page ?? 1;
       const limit = filter.limit ?? 10;
       const offset = page * limit - limit;
@@ -85,21 +100,24 @@ export const useHandleGetStockList = <T>({
       }
 
       const res = await axios.get(
-        `${BaseURL}/stock?limit=${limit}&offset=${offset}${queryParams}`
+        `${BaseURL}/stock?limit=${limit}&offset=${offset}${queryParams}`,
+        {headers}
       );
 
-
       if (formatLabel && res) {
-        const list = res.data.data.map((stock) => ({
+        const list = res.data.data.map((stock) => (!stock.discarded && {
           ...stock,
           number: `${stock.number} (${stock.commercial_name} - ${stock.generic_name})`,
-        }));  
+        }));
         setData({ data: list });
       } else {
         setData(res.data ?? []);
       }
       setIsLoading(false);
     } catch (error: any) {
+      if (error?.response?.status === 401) {
+        push("/");
+      }
       setError(error);
     }
     setIsLoading(false);

@@ -1,15 +1,16 @@
 "use client";
 import { useEffect } from "react";
 import axios from "axios";
-import { BaseURL } from "../constants/config";
+import { BaseURL, environment } from "../constants/config";
 import { useState } from "react";
 import moment from "moment";
+import { redirect, useRouter } from "next/navigation";
 
 type StockListProps = {
   page: number;
   limit: number;
   search?: string;
-  movementType?:  string;
+  movementType?: string;
   creationDateStart?: Date;
   creationDateEnd?: Date;
   expirationDateStart?: Date;
@@ -23,10 +24,24 @@ export const useHandleGetMovementList = <T>() => {
   const [data, setData] = useState<any>({});
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
+  const { push } = useRouter();
 
   const fetchData = async (filter: StockListProps) => {
     setIsLoading(true);
     try {
+      const user = localStorage.getItem(`user_${environment}`)
+        ? JSON.parse(localStorage.getItem(`user_${environment}`))
+        : undefined;
+
+      if (!user) {
+        push("/");
+      }
+
+      const headers = {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${user.token}`,
+      };
+
       const page = filter.page ?? 1;
       const limit = filter.limit ?? 10;
       const offset = page * limit - limit;
@@ -39,8 +54,8 @@ export const useHandleGetMovementList = <T>() => {
         }
 
         if (key === "movementType" && filter.movementType) {
-            queryParams += `&movementType=${filter.movementType}`;
-          }
+          queryParams += `&movementType=${filter.movementType}`;
+        }
 
         if (key === "genericName" && filter.genericName) {
           queryParams += `&genericName=${filter.genericName}`;
@@ -84,12 +99,16 @@ export const useHandleGetMovementList = <T>() => {
       }
 
       const res = await axios.get(
-        `${BaseURL}/movement?limit=${limit}&offset=${offset}${queryParams}`
+        `${BaseURL}/movement?limit=${limit}&offset=${offset}${queryParams}`,
+        {headers}
       );
 
       setData(res.data ?? []);
       setIsLoading(false);
     } catch (error: any) {
+      if (error?.response?.status === 401) {
+        push("/");
+      }
       setError(error);
     }
     setIsLoading(false);

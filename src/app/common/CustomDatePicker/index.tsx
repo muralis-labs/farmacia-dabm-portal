@@ -1,11 +1,11 @@
 "use client";
-import { FormLabel } from "react-bootstrap";
 import DatePicker from "react-datepicker";
 import CustomInput from "../CustomInput/index";
 import styles from "./index.module.scss";
 import "react-datepicker/dist/react-datepicker.css";
 import moment from "moment";
 import ptBR from "date-fns/locale/pt-BR";
+
 type CustomDatePickerProps = {
   placeholder?: string;
   label?: string;

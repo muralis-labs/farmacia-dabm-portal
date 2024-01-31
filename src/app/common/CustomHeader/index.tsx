@@ -36,9 +36,17 @@ export default function CustomHeader({
         }`}
       >
         {pathname.includes("/pages/stock") && isMobile && (
-          <div className={styles.user}>
+          <div className={styles.user} onClick={() => push("/pages/user")}>
             <Image className={styles.formImage} src={logo} alt="form Logo" />
           </div>
+        )}
+
+        {!pathname.includes("/pages/stock") && isMobile && (
+          <Icon
+            onClick={() => push("/pages/stock")}
+            icon="arrow_left_simple"
+            size={12}
+          />
         )}
 
         <h1 className={styles.title}>{selectedPath.name}</h1>
@@ -51,9 +59,14 @@ export default function CustomHeader({
             <Icon icon="funil" size={12} />
           </div>
         ) : (
-          <div className={styles.user}>
+          <div
+            onClick={() => push("/pages/user")}
+            className={`${styles.user} ${
+              pathname.includes("/pages/user") ? styles.selected : {}
+            }`}
+          >
             <Image className={styles.formImage} src={logo} alt="form Logo" />
-            {!isMobile && <span>{user.data.name}</span>}
+            {!isMobile && <span>{user?.name}</span>}
           </div>
         )}
       </div>
