@@ -17,6 +17,7 @@ import { useHandleUploadMedicines } from "@/app/hooks/useHandleUploadMedicines";
 import Scan from "./components/Scan";
 import { useHandleListMedicines } from "@/app/hooks/useHandleListMedicines";
 import CustomModal from "@/app/common/CustomModal/index";
+import CustomModalNotification from "@/app/common/CustomModalNotification/index";
 
 interface Medicine {
   code: string;
@@ -83,6 +84,7 @@ export default function Entry() {
   const [key, setKey] = useState(Math.random());
   const [edit, setEdit] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
 
   const [selectors] = useDeviceSelectors(window.navigator.userAgent);
 
@@ -218,6 +220,7 @@ export default function Entry() {
     uploadMedicinesFetchData(medicinesList);
     setMedicineList([]);
     clearFields();
+    setShowSuccess(true);
   };
 
   const handleUploadAllMedicinesMobile = async () => {
@@ -241,6 +244,7 @@ export default function Entry() {
     uploadMedicinesFetchData(data);
     setMedicineList([]);
     clearFields();
+    setShowSuccess(true);
   };
 
   const handleSelectCode = (selectedMedicine: Medicine) => {
@@ -458,11 +462,10 @@ export default function Entry() {
                   <Col xs={isMobile ? 12 : 6}>
                     <CustomButton
                       fullWidth
+                      success
                       disabled={validateForm() || getShelvesService.isLoading}
                       onClick={handleAddMedicine}
-                      label={
-                        edit ? "Editar Medicamento" : "Adicionar Medicamento"
-                      }
+                      label="Adicionar item à lista de entrada"
                     />
                   </Col>
                 </Row>
@@ -471,8 +474,8 @@ export default function Entry() {
 
             {!isMobile && (
               <>
-                <h2 className={`${styles.title} ${styles.mt}`}>
-                  Medicamentos Adicionados
+                <h2 className={`${styles.title} ${styles.green} ${styles.mt}`}>
+                  Lista de registro para entrada
                 </h2>
                 <CustomDataTable
                   headers={headers}
@@ -484,6 +487,7 @@ export default function Entry() {
                 />
                 <div className={styles.options}>
                   <CustomButton
+                    success
                     onClick={() => setShowModal(true)}
                     disabled={
                       medicinesList.length <= 0 || uploadMedicinesLoading
@@ -493,6 +497,13 @@ export default function Entry() {
                 </div>
               </>
             )}
+
+            <CustomModalNotification
+              title="Medicamentos inseridos com sucesso!"
+              onHide={() => setShowSuccess(false)}
+              show={showSuccess}
+            />
+
             <CustomModal
               show={showModal}
               icon="arrow_up"

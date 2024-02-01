@@ -12,13 +12,14 @@ import { Col, Form, Row } from "react-bootstrap";
 import CustomModal from "@/app/common/CustomModal/index";
 import { useHandleUpdateUser } from "@/app/hooks/useHandleUpdateUser";
 import { useRouter } from "next/navigation";
+
 import { useDeviceSelectors } from "react-device-detect";
 
 export default function User() {
   const userService = useHandleUpdateUser();
   const userString = localStorage.getItem(`user_${environment}`);
   const user = userString ? JSON.parse(userString) : null;
-  const { push } = useRouter();
+  const { push, refresh } = useRouter();
 
   const [edit, setEdit] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean>(false);
@@ -63,7 +64,9 @@ export default function User() {
         token: user.token,
       };
 
+      setEdit(false);
       localStorage.setItem(`user_${environment}`, JSON.stringify(data));
+      refresh();
     }
   };
 

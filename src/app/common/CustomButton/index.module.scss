@@ -7,7 +7,7 @@
   background-color: $brand-color-primary-dark;
 
   &.largeButton {
-    height: 56px !important;
+    height: 44px !important;
   }
 
   &.fullWidth {
@@ -36,6 +36,21 @@
     &:active {
       border-color: $volcano-strongest;
       background-color: $volcano-strongest;
+    }
+  }
+
+  &.warning {
+    border-color: $orange-dark;
+    background-color: $orange-dark;
+
+    &:hover {
+      border-color: $orange-darkest;
+      background-color: $orange-darkest;
+    }
+
+    &:active {
+      border-color: $orange-darkest-active;
+      background-color: $orange-darkest-active;
     }
   }
 

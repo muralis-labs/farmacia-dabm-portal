@@ -34,7 +34,7 @@
 
   .mobileSidebar {
     padding: 16px !important;
-    margin-bottom: 50px;
+    margin-bottom: 75px;
     gap: 16px;
   }
 
@@ -417,4 +417,27 @@
       border-radius: 8px;
     }
   }
+}
+
+.loadingCalendar {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #fff;
+  border-radius: 16px;
+  box-shadow: 0px 35px 40px 0px #0000001a;
+
+  .spinner-border {
+    width: 120px;
+    height: 120px;
+    --bs-spinner-border-width: 0.50em;
+  }
+}
+
+.CustomModalNotification_modalOptions__Y_ydZ {
+  display: flex;
+  margin-top: 20px;
+  justify-content: flex-end;
 }

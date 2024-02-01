@@ -6,6 +6,7 @@ import CustomButton from "../CustomButton/index";
 
 interface CustomModalProps {
   confirm?: boolean;
+  warning?: boolean;
   icon?: string;
   show: boolean;
   onHide: () => void;
@@ -17,6 +18,7 @@ interface CustomModalProps {
 
 export default function CustomModal({
   confirm = false,
+  warning = false,
   icon = "trash",
   show,
   onHide,
@@ -40,11 +42,15 @@ export default function CustomModal({
     >
       <Modal.Body className={styles.modalBody}>
         <div className={styles.modalHeader}>
-          <div className={`${confirm ? styles.confirm : {}} ${styles.actionContainer}`}>
+          <div
+            className={`${confirm ? styles.confirm : {}} ${warning ? styles.warning : {}} ${
+              styles.actionContainer
+            }`}
+          >
             <Icon
               icon={icon}
               size={33}
-              color={confirm ? colors.greenDarkest : colors.volcanoStrong}
+              color={confirm ? colors.greenDarkest : warning ? colors.orangeDarkest : colors.volcanoStrong}
             />
           </div>
           <Icon
@@ -62,19 +68,13 @@ export default function CustomModal({
 
         <div className={styles.modalOptions}>
           <CustomButton onClick={onHide} label="Cancelar" onlyText />
-          {confirm ? (
-            <CustomButton
-              onClick={handleClickConfirm}
-              label={confirmButton}
-              success
-            />
-          ) : (
-            <CustomButton
-              onClick={handleClickConfirm}
-              label={confirmButton}
-              danger
-            />
-          )}
+          <CustomButton
+            onClick={handleClickConfirm}
+            label={confirmButton}
+            success={confirm}
+            warning={warning && !confirm}
+            danger={!confirm && !warning}
+          />
         </div>
       </Modal.Body>
     </Modal>

@@ -101,17 +101,23 @@ export const useHandleGetStockList = <T>({
 
       const res = await axios.get(
         `${BaseURL}/stock?limit=${limit}&offset=${offset}${queryParams}`,
-        {headers}
+        { headers }
       );
 
       if (formatLabel && res) {
-        const list = res.data.data.map((stock) => (!stock.discarded && {
-          ...stock,
-          number: `${stock.number} (${stock.commercial_name} - ${stock.generic_name})`,
-        }));
+        const list = [];
+        res.data.data.map(
+          (stock) =>
+            !stock.discarded &&
+            list.push({
+              ...stock,
+              number: `${stock.number} (${stock.commercial_name} - ${stock.generic_name})`,
+            })
+        );
         setData({ data: list });
       } else {
-        setData(res.data ?? []);
+        const list = res.data.data.filter((stock) => !stock.discarded && stock);
+        setData({ data: list } ?? []);
       }
       setIsLoading(false);
     } catch (error: any) {

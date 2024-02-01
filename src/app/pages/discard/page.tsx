@@ -18,6 +18,7 @@ import { useDeviceSelectors } from "react-device-detect";
 import Scan from "./components/Scan";
 import { useRouter, useSearchParams } from "next/navigation";
 import CustomModal from "@/app/common/CustomModal/index";
+import { useHandleDiscardBatch } from "@/app/hooks/useHandleDiscardBatch";
 import CustomModalNotification from "@/app/common/CustomModalNotification/index";
 
 interface Medicine {
@@ -68,7 +69,7 @@ export default function Page() {
   const getMedicineService = useHandleGetMedicine();
   const listMedicinesService = useHandleListMedicines();
   const getStockListService = useHandleGetStockList({ formatLabel: true });
-  const updateStockService = useHandleUpdateStock();
+  const discardBatchesService = useHandleDiscardBatch();
 
   const { data: shelves, fetchData: getShelvesFetchData } = getShelvesService;
   const { fetchData: createShelfData } = createShelfService;
@@ -84,8 +85,8 @@ export default function Page() {
     data: stockList,
     isLoading: stockListLoading,
   } = getStockListService;
-  const { fetchData: updateStockList, isLoading: updateStockLoading } =
-    updateStockService;
+  const { fetchData: discardBatches, isLoading: discardBatchesLoading } =
+    discardBatchesService;
 
   const { push } = useRouter();
   const searchParams = useSearchParams();
@@ -105,9 +106,9 @@ export default function Page() {
   const [medicineId, setMedicineId] = useState<string | null>(null);
   const [batchId, setBatchId] = useState<string | null>(null);
   const [showModal, setShowModal] = useState<boolean>(false);
+  const [showSuccess, setShowSuccess] = useState(false);
   const [selectors] = useDeviceSelectors(window.navigator.userAgent);
   const [scanCode, setScanCode] = useState("");
-  const [showSuccess, setShowSuccess] = useState(false);
   const { isMobile } = selectors;
 
   const headers = [
@@ -238,7 +239,7 @@ export default function Page() {
       entry: new Date(),
     };
 
-    await updateStockList([newMedicine]);
+    await discardBatches([newMedicine]);
     resetFields();
     setShowSuccess(true);
   };
@@ -280,7 +281,7 @@ export default function Page() {
   };
 
   const handleUpdateStock = async () => {
-    await updateStockList(rows);
+    await discardBatches(rows);
     resetFields();
     setRows([]);
     setShowSuccess(true);
@@ -517,8 +518,8 @@ export default function Page() {
                       fullWidth
                       disabled={validateForm()}
                       onClick={updateMedicineList}
-                      danger
-                      label="Adicionar item à lista de saída"
+                      warning
+                      label="Adicionar item à lista de descarte"
                     />
                   </Col>
                 </Row>
@@ -526,21 +527,23 @@ export default function Page() {
             </Form>
             {!isMobile && (
               <>
-                <h2 className={`${styles.title} ${styles.danger} ${styles.mt}`}>
-                  Lista de registro para saída
+                <h2
+                  className={`${styles.title} ${styles.warning} ${styles.mt}`}
+                >
+                  Lista de registro para descarte
                 </h2>
                 <CustomDataTable
-                  isLoading={updateStockLoading}
+                  isLoading={discardBatchesLoading}
                   headers={headers}
                   rows={rows}
                   key="data-table"
                 />
                 <div className={styles.options}>
                   <CustomButton
-                    disabled={rows.length <= 0}
+                    // disabled={rows.length <= 0}
                     onClick={() => setShowModal(true)}
-                    label="Registrar Saída"
-                    danger
+                    label="Registrar Descarte"
+                    warning
                   />
                 </div>
               </>
@@ -553,25 +556,27 @@ export default function Page() {
           <CustomButton
             onClick={() => setShowModal(true)}
             largeButton
-            danger
-            label="Registrar Saída"
+            warning
+            label="Registrar Descarte"
           />
         </div>
       )}
 
       <CustomModalNotification
-        title="Baixa realizada com sucesso!"
+        title="Medicamentos descartados com sucesso!"
         onHide={() => setShowSuccess(false)}
         show={showSuccess}
       />
 
       <CustomModal
         show={showModal}
-        confirmButton="Registrar saída"
-        description=" Tem certeza que deseja realizar a saída desses medicamentos? Essa
+        confirmButton="Registrar Descarte"
+        description=" Tem certeza que deseja realizar o descarte desses medicamentos? Essa
       ação não poderá ser desfeita"
-        title="Saída de medicamentos"
+        title="Descarte de medicamentos"
         onHide={() => setShowModal(false)}
+        warning
+        icon="warning"
         handleConfirm={() =>
           isMobile ? handleUploadAllMedicinesMobile() : handleUpdateStock()
         }

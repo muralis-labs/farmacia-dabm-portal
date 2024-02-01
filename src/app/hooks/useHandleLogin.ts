@@ -3,6 +3,7 @@ import axios from "axios";
 import { environment, BaseURL } from "../constants/config";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 type loginProps = {
   login: string;
@@ -19,13 +20,22 @@ export const useHandleLogin = <T>() => {
       const res = await axios.post(`${BaseURL}/login`, data);
 
       if (res.data) {
+        toast.success("Login realizado com sucesso", {
+          autoClose: 2000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          draggable: false,
+        });
         localStorage.setItem(`user_${environment}`, JSON.stringify(res.data));
-        push("/pages/entry");
+        push("/pages/dashboard");
       }
     } catch (error: any) {
       if (error?.response?.status === 401) {
         push("/");
       }
+
+      toast.error(error.response.data[0]);
+      setIsLoading(false);
       setError(error);
     }
     setIsLoading(false);

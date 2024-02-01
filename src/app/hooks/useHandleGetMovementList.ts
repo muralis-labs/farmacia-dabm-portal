@@ -20,7 +20,7 @@ type StockListProps = {
   commercialName?: string;
 };
 
-export const useHandleGetMovementList = <T>() => {
+export const useHandleGetMovementList = <T>(dashboard: boolean) => {
   const [data, setData] = useState<any>({});
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
@@ -119,7 +119,7 @@ export const useHandleGetMovementList = <T>() => {
   };
 
   useEffect(() => {
-    fetchData({ page: 1, limit: 10 });
+    fetchData({ page: 1, limit: dashboard ? 6 : 10 });
   }, []);
 
   return { data, isLoading, error, refetchData };

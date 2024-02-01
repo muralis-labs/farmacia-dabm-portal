@@ -14,6 +14,8 @@ import { useDeviceSelectors } from "react-device-detect";
 import { useHandleConvertList } from "@/app/hooks/useHandleConvertList";
 import CustomFloatButton from "@/app/common/CustomFloatButton/index";
 import { useRouter, useSearchParams } from "next/navigation";
+import notFound from "@/app/assets/no_results_found.svg";
+import Image from "next/image";
 
 export default function Page() {
   const getStockListService = useHandleGetStockList({ formatLabel: false });
@@ -341,13 +343,6 @@ export default function Page() {
               <Icon icon="close" size={12} />
             </div>
           </div>
-          <CustomDatePickerRange
-            id="entryDate"
-            label="Data de atendimento"
-            onChange={onChangeEntryDate}
-            startDate={startEntryDate as any}
-            endDate={endEntryDate as any}
-          />
           <CustomInput
             id="search"
             placeholder="Buscar"
@@ -439,13 +434,6 @@ export default function Page() {
                     <h2>Filtros</h2>
                     <h3 onClick={clearFilters}>Limpar tudo</h3>
                   </div>
-                  <CustomDatePickerRange
-                    id="entryDate"
-                    label="Data de atendimento"
-                    onChange={onChangeEntryDate}
-                    startDate={startEntryDate as any}
-                    endDate={endEntryDate as any}
-                  />
                   <CustomInput
                     id="searchGenericName"
                     placeholder="Buscar nome genérico"
@@ -532,9 +520,16 @@ export default function Page() {
         </div>
       ) : (
         <div>
-          {stockList.data && stockList.data.length > 0 && (
+          {stockList.data && stockList.data.length > 0 ? (
             <div onScroll={handleScroll} className={styles.listContainer}>
               {stockList.data.map((item) => renderMobileCard(item))}
+            </div>
+          ) : (
+            <div className={styles.notFoundContainer}>
+              <Image src={notFound} alt="not found" />
+              <span className={styles.notFoundText}>
+                Nenhum medicamento encontrado
+              </span>
             </div>
           )}
         </div>

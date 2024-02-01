@@ -16,7 +16,7 @@ import { MOVEMENTS_TYPES } from "@/app/constants/selectors";
 import { useHandleConvertList } from "@/app/hooks/useHandleConvertList";
 
 export default function Page() {
-  const getMovementListService = useHandleGetMovementList();
+  const getMovementListService = useHandleGetMovementList(false);
   const convertListService = useHandleConvertList();
   const {
     refetchData: getMovementList,

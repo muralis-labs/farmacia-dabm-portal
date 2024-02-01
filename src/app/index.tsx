@@ -8,6 +8,8 @@ import CustomFooter from "./common/CustomFooter/index";
 import CustomHeader from "./common/CustomHeader/index";
 import CustomSideBar from "./common/CustomSideBar/index";
 import styles from "./index.module.scss";
+import { toast, ToastContainer } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,10 +22,12 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { push } = useRouter();
 
   const menus = useMemo(() => [
-    { name: "Entrada", icon: "arrow_up", route: "/pages/entry" },
-    { name: "Saída", icon: "arrow_down", route: "/pages/outflow" },
+    { name: "Dashboard", icon: "home", route: "/pages/dashboard" },
     { name: "Estoque", icon: "bag", route: "/pages/stock" },
     { name: "Movimentação", icon: "battery", route: "/pages/movement" },
+    { name: "Entrada", icon: "arrow_up", route: "/pages/entry" },
+    { name: "Saída", icon: "arrow_down", route: "/pages/outflow" },
+    { name: "Descarte", icon: "block", route: "/pages/discard" },
     { name: "Calendário", icon: "calendar", route: "/pages/calendar" },
     { name: "Perfil", icon: "", route: "/pages/user", hide: true },
   ], []);
@@ -31,9 +35,9 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const selectedPath = useMemo(() => menus.find(menu => menu.route === pathname || menu?.subMenuRoute === pathname), [menus, pathname]);
 
   const mobileMenus = useMemo(() => [
-    { name: "Dashboard", icon: "home", route: "/pages/entry" },
+    { name: "Dashboard", icon: "home", route: "/pages/dashboard" },
     { name: "Estoque", icon: "screen", route: "/pages/stock" },
-    { name: "Calendário", icon: "calendar", route: "/pages" },
+    { name: "Calendário", icon: "calendar", route: "/pages/calendar" },
   ], []);
 
   const renderSideBar = () => (
@@ -60,6 +64,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
   return (
     <body className={inter.className}>
+      <ToastContainer />
       <div className={styles.mainContainer}>
         {renderSideBar()}
         <div className={`${styles.safeArea} ${isMobile || pathname.includes("/pages/login") ? styles.removePadding : ""}`}>

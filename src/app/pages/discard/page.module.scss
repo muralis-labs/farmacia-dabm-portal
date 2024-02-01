@@ -6,14 +6,14 @@
   height: 90%;
 
   &.mobile {
-    padding: 24px 24px 0 24px !important;
+    padding: 0 24px !important;
     height: 100%;
     overflow-y: auto;
 
-    &.mobileScan {
-      padding: 0 !important;
-      overflow-y: hidden;
-    }
+    // &.mobileScan {
+    //   padding: 0 !important;
+    //   overflow-y: hidden;
+    // }
 
     .divider {
       margin-bottom: 0px !important;
@@ -44,6 +44,12 @@
   display: flex;
   flex-direction: column;
   gap: 24px;
+
+  .mobileRow {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
 }
 
 .title {
@@ -52,8 +58,8 @@
   font-size: $font-size-md;
 }
 
-.green {
-  color: $green-dark;
+.warning {
+  color: $orange-dark
 }
 
 .divider {
@@ -76,12 +82,6 @@
 .options {
   display: flex;
   justify-content: flex-end;
-}
-
-.mobileRow {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
 }
 
 .mobileOptions {

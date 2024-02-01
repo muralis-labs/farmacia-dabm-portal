@@ -2,6 +2,7 @@ import axios from "axios";
 import { BaseURL, environment } from "../constants/config";
 import { useState } from "react";
 import { redirect } from "next/navigation";
+import { toast } from "react-toastify";
 
 type convertListBody = {
   rows: any[];
@@ -33,6 +34,12 @@ export const useHandleConvertList = () => {
 
       const res = await axios.post(`${BaseURL}/convert`, data, { headers });
 
+      toast.success("Lista convertida com sucesso", {
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        draggable: false,
+      });
       return res.data;
     } catch (error: any) {
       if (error?.response?.status === 401) {

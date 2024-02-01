@@ -18,12 +18,11 @@ export default function Home() {
 
   const { isMobile } = selectors;
 
-  const handleLoginClient = () => {
-    fetchData({ login, password });
+  const handleLoginClient = async() => {
+    await fetchData({ login, password });
   };
-
   useEffect(() => {
-    console.log(error);
+  
   }, [error]);
 
   const renderBanner = () => {

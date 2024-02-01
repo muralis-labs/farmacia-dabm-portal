@@ -69,10 +69,6 @@ export default function CustomAutoComplete({
       onSearchItem(event);
       setSearch(searchTerm);
 
-      const filteredItems = items.filter((item) =>
-        item[field].toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase())
-      );
-
       setShowCreateButton(allowCreation && searchTerm.length >= 1);
     },
     [allowCreation, field, items, onSearchItem]

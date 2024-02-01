@@ -58,15 +58,18 @@ const CustomDataTable: React.FC<CustomDataTableProps> = ({
     return (
       <div className={styles.iconContainer}>
         <Icon
-          icon={item[header.field] === "entry" ? "arrow_up" : "arrow_down"}
+          icon={item[header.field] === "entry" ? "arrow_up" : item[header.field] === "discard" ? 'block' : "arrow_down"}
           size={20}
           color={
             item[header.field] === "entry"
               ? colors.feedbackColorSuccess
-              : colors.feedbackColorDanger
+              : item[header.field] === "discard" ?
+              colors.feedbackColorWarning
+              :
+              colors.feedbackColorDanger
           }
         />
-        {item[header.field] === "entry" ? "Entrada" : "Saída"}
+        {item[header.field] === "entry" ? "Entrada" : item[header.field] === "discard" ? 'Descarte' : "Saída"}
       </div>
     );
   };

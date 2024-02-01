@@ -10,4 +10,5 @@ export const UNIT_OF_MEASUREMENT = Object.freeze([
 export const MOVEMENTS_TYPES = Object.freeze([
     { value: 'entry', name: "Entrada" },
     { value: 'outflow', name: "Saída" },
+    { value: 'discard', name: "Descarte" },
 ]);

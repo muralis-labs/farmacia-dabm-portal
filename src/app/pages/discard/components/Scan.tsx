@@ -41,15 +41,8 @@ export default function Scan({
   return isMobile ? (
     <div className={style.scanMobile}>
       <video className={style.scan} ref={ref} />
-      <div className={style.ocrloader}>
-        <em></em>
-        <span></span>
-      </div>
       <div className={style.buttonContainer}>
-        <CustomButton
-          onClick={() => push("/pages/entry")}
-          label="Adicionar código manualmente"
-        />
+        <CustomButton onClick={() => push('/pages/entry')} label="Adicionar código manualmente" />
       </div>
     </div>
   ) : (
@@ -58,10 +51,7 @@ export default function Scan({
       <span className={style.text}>
         Scaneie o código de barras ou adicione manualmente
       </span>
-      <CustomButton
-        onClick={() => push("/pages/entry")}
-        label="Adicionar código manualmente"
-      />
+      <CustomButton onClick={() => push('/pages/entry')} label="Adicionar código manualmente" />
       <input className={style.scanInput} onChange={onChange} ref={inputRef} />
     </div>
   );

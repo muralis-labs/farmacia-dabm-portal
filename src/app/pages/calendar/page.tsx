@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import "./page.scss";
 import "react-datepicker/dist/react-datepicker.css";
-import styles from "./page.module.scss";
+import "moment/locale/pt-br";
 import ptBR from "date-fns/locale/pt-BR";
 import ReactDatePicker from "react-datepicker";
 import moment from "moment";
@@ -12,12 +12,15 @@ import CustomButton from "@/app/common/CustomButton/index";
 import CustomModal from "@/app/common/CustomModal/index";
 import { useHandleDiscardBatch } from "@/app/hooks/useHandleDiscardBatch";
 import { useDeviceSelectors } from "react-device-detect";
+import { Spinner } from "react-bootstrap";
+import CustomModalNotification from "@/app/common/CustomModalNotification/index";
 
 export default function Calendar() {
   moment.locale("pt-br");
   const [startDate, setStartDate] = useState(new Date());
   const [selectedDayMedicines, setSelectedDayMedicines] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
   const getCalendarList = useHandleGetCalendarList({ formatLabel: false });
   const discardBatchesService = useHandleDiscardBatch();
   const {
@@ -59,7 +62,7 @@ export default function Calendar() {
         <label className="dayLabel">{day}</label>
         {dayMedicines.length > 0 && !isMobile ? (
           <div className="info">
-            <Icon icon="trash" size={12} />
+            <Icon icon="warning" size={12} />
             {dayMedicines.length}
           </div>
         ) : (
@@ -67,19 +70,6 @@ export default function Calendar() {
         )}
       </div>
     );
-  };
-
-  const translateDayOfWeek = (dayOfWeek) => {
-    const translatedDays = {
-      Mon: "S",
-      Tue: "T",
-      Wed: "Q",
-      Thu: "Q",
-      Fri: "S",
-      Sat: "S",
-      Sun: "D",
-    };
-    return translatedDays[dayOfWeek];
   };
 
   const daysOfMonth = ({ year, month }) => {
@@ -91,8 +81,8 @@ export default function Calendar() {
     for (let day = 1; day <= daysInMonth; day++) {
       const date = moment(`${year}-${month}-${day}`, "YYYY-MM-DD");
       const dayOfMonth = date.format("D");
-      const dayOfWeek = translateDayOfWeek(date.format("ddd"));
-      daysArray.push(`${dayOfMonth} ${dayOfWeek}`);
+      const dayOfWeek = date.format("ddd");
+      daysArray.push(`${dayOfMonth} ${dayOfWeek[0].toUpperCase()}`);
     }
 
     return (
@@ -126,6 +116,7 @@ export default function Calendar() {
         .endOf("month")
         .format("YYYY-MM-DDTHH:mm:ss.SSS[Z]"),
     });
+    setShowSuccess(true);
   };
 
   const handleSelectDate = (date) => {
@@ -143,11 +134,17 @@ export default function Calendar() {
   };
 
   useEffect(() => {
-    setTimeout(() => handleSelectDate(new Date()), 3000);
+    handleSelectDate(new Date());
   }, [stockList]);
 
   return (
     <div className={`page ${isMobile ? "mobilePage" : ""}`}>
+      <CustomModalNotification
+        title="Medicamentos descartados com sucesso!"
+        onHide={() => setShowSuccess(false)}
+        show={showSuccess}
+      />
+
       <CustomModal
         show={showModal}
         confirmButton="Registrar descarte"
@@ -158,7 +155,7 @@ export default function Calendar() {
         handleConfirm={() => handleDiscardMedicines()}
       />
 
-      {!isMobile && (
+      {!isMobile && !stockListLoading && (
         <ReactDatePicker
           selected={startDate}
           renderCustomHeader={renderCustomHeader}
@@ -169,6 +166,12 @@ export default function Calendar() {
           renderDayContents={renderDayContents}
           inline
         />
+      )}
+
+      {!isMobile && stockListLoading && (
+        <div className="loadingCalendar">
+          <Spinner />
+        </div>
       )}
 
       <div className={`sidebar ${isMobile ? "mobileSidebar" : ""}`}>
@@ -201,24 +204,33 @@ export default function Calendar() {
           })}
 
         <div className="expiratedMedicines">
-          <div className="circleBigger">
-            <div className="circleSmaller">
-              <Icon icon="battery" size={36} />
-            </div>
-          </div>
-          <span className="info">{selectedDayMedicines.length}</span>
-          <span className="text">Medicamentos</span>
-          {!isMobile && (
-            <CustomButton
-              label="Descartar todos"
-              onClick={() => setShowModal(true)}
-            />
+          {stockListLoading ? (
+            <Spinner />
+          ) : (
+            <>
+              <div className="circleBigger">
+                <div className="circleSmaller">
+                  <Icon icon="battery" size={36} />
+                </div>
+              </div>
+              <span className="info">{selectedDayMedicines.length}</span>
+              <span className="text">Medicamentos</span>
+              {!isMobile && (
+                <CustomButton
+                  label="Descartar todos"
+                  onClick={() => setShowModal(true)}
+                />
+              )}
+            </>
           )}
         </div>
 
         {isMobile && (
           <div className={`date ${isMobile ? "mobileTitle" : ""}`}>
-            {moment().format("DD/MM/YYYY") === moment(startDate).format("DD/MM/YYYY") ? 'Hoje' :  moment(startDate).format("DD/MM/YYYY")}
+            {moment().format("DD/MM/YYYY") ===
+            moment(startDate).format("DD/MM/YYYY")
+              ? "Hoje"
+              : moment(startDate).format("DD/MM/YYYY")}
           </div>
         )}
 

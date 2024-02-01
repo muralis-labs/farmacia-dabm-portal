@@ -3,6 +3,7 @@ import { BaseURL, environment } from "../constants/config";
 import { useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 type fetchDataProps = {
   id: string | null;
@@ -36,12 +37,20 @@ export const useHandleUpdateUser = <T>() => {
       const res = await axios.patch(`${BaseURL}/user`, data, { headers });
 
       if (res.data) {
+        toast.success("Usuário atualizado com sucesso!", {
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          draggable: false,
+        });
+
         return res.data;
       }
     } catch (error: any) {
       if (error?.response?.status === 401) {
         push("/");
       }
+      toast.error(error.response.data[0]);
       setError(error);
     }
     setIsLoading(false);
