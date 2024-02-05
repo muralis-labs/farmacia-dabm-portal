@@ -64,26 +64,17 @@ export default function Dashboard() {
     },
   ];
 
-  const renderCustomHeader = ({ date, increaseMonth, decreaseMonth }) => {
+  const renderCustomHeader = ({ date, increaseMonth, decreaseMonth }: { date: any, increaseMonth: any, decreaseMonth: any }) => {
     return (
       <div className="header">
         <Icon onClick={decreaseMonth} icon="arrow_left_simple" size={14} />
-
         {moment(date).format("MMM, YYYY")}
-
         <Icon onClick={increaseMonth} icon="arrow_right_simple" size={14} />
       </div>
     );
   };
 
-  const renderDayContents = (day, date) => {
-    const dayMedicines =
-      stockList?.data?.filter(
-        (item) =>
-          moment(date).isSame(moment(item.expiration).format("YYYY-MM-DD")) &&
-          item
-      ) ?? [];
-
+  const renderDayContents = (day: any, date: any) => {
     return (
       <div className="dayContainer">
         <label className="dayLabel">{day}</label>
@@ -91,11 +82,11 @@ export default function Dashboard() {
     );
   };
 
-  const handleSelectDate = (date) => {
+  const handleSelectDate = (date: any) => {
     const formatedDate = moment(date).format("YYYY-MM-DD");
     const dayMedicines =
       stockList?.data?.filter(
-        (item) =>
+        (item: any) =>
           moment(formatedDate).isSame(
             moment(item.expiration).format("YYYY-MM-DD")
           ) && item
@@ -172,7 +163,7 @@ export default function Dashboard() {
         {isMobile && movementList?.data?.length > 0 && (
           <div className="medicines mobile">
             <span className="actions">Ultimas atualizações</span>
-            {movementList?.data?.map((item) => (
+            {movementList?.data?.map((item: any) => (
               <div className="medicine mobile">
                 <div className="pillContainer">
                   <Icon icon="pill" size={16} />
@@ -264,7 +255,7 @@ export default function Dashboard() {
 
           {selectedDayMedicines.length > 0 && (
             <div className="medicines">
-              {selectedDayMedicines.map((item) => (
+              {selectedDayMedicines.map((item: any) => (
                 <div className="medicine">
                   <div className="pillContainer">
                     <Icon icon="pill" size={16} />

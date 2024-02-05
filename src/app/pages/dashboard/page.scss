@@ -3,7 +3,7 @@
 .page {
   display: flex;
   gap: 16px;
-  height: 86vh;
+  height: 82vh;
   overflow-y: auto;
   margin-top: 16px;
 
@@ -93,7 +93,7 @@
 .left {
   width: 75%;
   height: 100%;
-  display: flex;
+  display: grid;
   flex-direction: column;
   gap: 24px;
 
@@ -157,6 +157,7 @@
 
   .table {
     padding: 24px 8px;
+    margin: 0 !important;
     display: flex;
     flex-direction: column;
     gap: 16px;

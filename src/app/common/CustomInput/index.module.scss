@@ -41,6 +41,14 @@
   background: $neutral-color-gray-softest;
 }
 
+.errorSearch {
+  border: 1px solid $feedback-color-danger !important;
+}
+
+.errorLabel {
+  color: $feedback-color-danger !important;
+}
+
 .input::placeholder {
   color: $neutral-color-gray-medium;
 }
@@ -54,4 +62,14 @@
     position: absolute;
     right: 16px;
   }
+}
+
+.tip {
+  font-family: Roboto;
+  font-size: 10px;
+  font-weight: 400;
+  line-height: 16px;
+  letter-spacing: 0em;
+  text-align: left;
+  color: $neutral-color-gray-strongest;
 }

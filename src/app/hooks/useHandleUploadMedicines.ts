@@ -6,15 +6,14 @@ import { useRouter } from "next/navigation";
 
 export const useHandleUploadMedicines = <T>() => {
   const [isLoading, setIsLoading] = useState(false);
-  const [data, setData] = useState<T | null>(null);
   const [error, setError] = useState<Error | null>(null);
   const { push } = useRouter();
 
-  const fetchData = async (data: any[]) => {
+  const fetchData = async (data: any) => {
     setIsLoading(true);
     try {
       const user = localStorage.getItem(`user_${environment}`)
-        ? JSON.parse(localStorage.getItem(`user_${environment}`))
+        ? JSON.parse(localStorage.getItem(`user_${environment}`) as string)
         : undefined;
 
       if (!user) {
@@ -25,17 +24,35 @@ export const useHandleUploadMedicines = <T>() => {
         "Content-Type": "application/json",
         Authorization: `Bearer ${user.token}`,
       };
-      const res = await axios.post(`${BaseURL}/stock`, data, {headers});
+
+      const updateList = [];
+      const uploadList: any[] = [];
+      data.map((item: any) => item.batchId ? updateList.push(item) : uploadList.push(item));
+
+      const patchRequests = data.map((batch: any) =>
+        axios.patch(
+          `${BaseURL}/batch`,
+          {
+            id: batch.batchId,
+            quantity: batch.quantity,
+          },
+          { headers }
+        )
+      );
+
+      await Promise.all(patchRequests);
+      const res = await axios.post(`${BaseURL}/stock`, uploadList, { headers });
 
       if (res.data) {
-        setData(res.data.data);
+        setIsLoading(false);
+        return res.data;
       }
+      setIsLoading(false);
     } catch (error: any) {
-      console.log(error);
       setError(error);
     }
     setIsLoading(false);
   };
 
-  return { data, isLoading, error, fetchData };
+  return { isLoading, error, fetchData };
 };

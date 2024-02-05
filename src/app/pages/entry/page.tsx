@@ -18,6 +18,7 @@ import Scan from "./components/Scan";
 import { useHandleListMedicines } from "@/app/hooks/useHandleListMedicines";
 import CustomModal from "@/app/common/CustomModal/index";
 import CustomModalNotification from "@/app/common/CustomModalNotification/index";
+import { useHandleGetStockList } from "@/app/hooks/useHandleGetStockList";
 
 interface Medicine {
   code: string;
@@ -36,12 +37,29 @@ interface Medicine {
   entry: Date;
 }
 
+type SelectedBatch = {
+  code: string;
+  number: string;
+  batch_id: string;
+  medicine_id: string;
+  commercial_name: string;
+  generic_name: string;
+  dosage: number;
+  pharmaceutical: string;
+  unit_of_measurement: string;
+  name: string;
+  shelf_id: string;
+  quantity: number;
+  expiration: string;
+};
+
 export default function Entry() {
   const getShelvesService = useHandleShelves();
   const createShelfService = useHandleCreateShelf();
   const getMedicineService = useHandleGetMedicine();
   const uploadMedicinesService = useHandleUploadMedicines();
   const listMedicinesService = useHandleListMedicines();
+  const getStockListService = useHandleGetStockList({ formatLabel: true });
 
   const {
     data: shelves,
@@ -61,6 +79,11 @@ export default function Entry() {
     refetchData: listMedicinesFetchData,
     isLoading: listMedicinesLoading,
   } = listMedicinesService;
+  const {
+    refetchData: getStockList,
+    data: stockList,
+    isLoading: stockListLoading,
+  } = getStockListService;
 
   const { push } = useRouter();
 
@@ -74,8 +97,8 @@ export default function Entry() {
   const [expiration, setExpiration] = useState<Date | undefined>();
   const [unitOfMeasurement, setUnitOfMeasurement] = useState("");
   const [shelf, setShelf] = useState("");
-  const [medicineId, setMedicineId] = useState(null);
-  const [shelfId, setShelfId] = useState(null);
+  const [medicineId, setMedicineId] = useState<string | null>(null);
+  const [shelfId, setShelfId] = useState<string | null>(null);
   const [dosage, setDosage] = useState<number | undefined>(0);
   const [pharmaceutical, setPharmaceutical] = useState("");
   const [batch, setBatch] = useState("");
@@ -85,7 +108,8 @@ export default function Entry() {
   const [edit, setEdit] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
-
+  const [batchId, setBatchId] = useState<string | null>(null);
+  const [warning, setWarning] = useState(false);
   const [selectors] = useDeviceSelectors(window.navigator.userAgent);
 
   const { isMobile } = selectors;
@@ -142,6 +166,7 @@ export default function Entry() {
 
     const data = {
       code,
+      batchId: batchId ?? undefined,
       commercialName,
       genericName,
       expiration,
@@ -154,6 +179,7 @@ export default function Entry() {
       batch,
       quantity,
       entry: new Date(),
+      status: "pending",
     };
 
     let info = medicinesList;
@@ -181,6 +207,7 @@ export default function Entry() {
     setExpiration(undefined);
     setQuantity(0);
     setBatch("");
+    setWarning(false);
     setShelf("");
     setShelfId(null);
     setPharmaceutical("");
@@ -217,12 +244,27 @@ export default function Entry() {
   };
 
   const handleUploadAllMedicines = async () => {
-    uploadMedicinesFetchData(medicinesList);
-    setMedicineList([]);
+    const list: Array<any> = [];
+    medicinesList.map((item) => list.push({ ...item, status: "waiting" }));
+    setMedicineList(list);
+    await uploadAllMedicines(list);
+  };
+
+  const uploadAllMedicines = async (data: Array<any>) => {
+    const result = await uploadMedicinesFetchData(data);
+    if (result) {
+      const list: Array<any> = [];
+      medicinesList.map((item) => list.push({ ...item, status: "done" }));
+      setMedicineList(list);
+    }
     clearFields();
     setShowSuccess(true);
   };
 
+  const handleCloseSuccessModal = () => {
+    setMedicineList([]);
+    setShowSuccess(false);
+  };
   const handleUploadAllMedicinesMobile = async () => {
     const data = [
       {
@@ -247,11 +289,33 @@ export default function Entry() {
     setShowSuccess(true);
   };
 
+  const handleSelectBatch = (selectedBatch: SelectedBatch) => {
+    const unit = UNIT_OF_MEASUREMENT.find(
+      (item) => item.name === selectedBatch["unit_of_measurement"]
+    );
+
+    setWarning(false);
+    setCode(selectedBatch["code"]);
+    setBatch(selectedBatch["number"]);
+    setBatchId(selectedBatch["batch_id"]);
+    setMedicineId(selectedBatch["medicine_id"]);
+    setCommercialName(selectedBatch["commercial_name"]);
+    setGenericName(selectedBatch["generic_name"]);
+    setDosage(selectedBatch["dosage"]);
+    setPharmaceutical(selectedBatch["pharmaceutical"]);
+    setUnitOfMeasurement(unit?.name ?? "");
+    setShelf(selectedBatch["name"]);
+    setShelfId(selectedBatch["shelf_id"]);
+    setQuantity(selectedBatch["quantity"]);
+    setExpiration(new Date(selectedBatch["expiration"]));
+  };
+
   const handleSelectCode = (selectedMedicine: Medicine) => {
     setCode(selectedMedicine.code);
     setCommercialName(selectedMedicine.commercialName);
     setGenericName(selectedMedicine.genericName);
     setDosage(selectedMedicine.dosage);
+    setWarning(true);
     setUnitOfMeasurement(selectedMedicine.unitOfMeasurement);
   };
 
@@ -285,6 +349,7 @@ export default function Entry() {
   useEffect(() => {
     const getData = async () => {
       const data = await getMedicineData({ code });
+      getStockList({ page: 1, limit: 10, search: code });
 
       if (data) {
         const unit: any = UNIT_OF_MEASUREMENT.find(
@@ -294,6 +359,7 @@ export default function Entry() {
         setMedicineId(data.id);
         setCommercialName(data.commercialName);
         setDosage(data.dosage);
+        setWarning(true);
         setGenericName(data.genericName);
         setUnitOfMeasurement(unit.name);
       } else {
@@ -307,6 +373,22 @@ export default function Entry() {
     setEdit(false);
     return () => clearTimeout(timer);
   }, [code]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        getStockList({ page: 1, limit: 10, search: batch });
+      } catch (error) {
+        console.error("Erro ao obter dados do medicamento:", error);
+      }
+    };
+
+    const timer = setTimeout(() => {
+      fetchData();
+    }, 700);
+
+    return () => clearTimeout(timer);
+  }, [batch]);
 
   return (
     <>
@@ -327,7 +409,7 @@ export default function Entry() {
             className={`${styles.entryContainer} ${styles.flexColDirection}`}
           >
             <div className={styles.topInfo}>
-              <h2 className={styles.title}>Informações do Medicamento</h2>
+              <h2 className={`${styles.title} ${styles.green}`}>Informações do Medicamento</h2>
               <div className={styles.divider} />
             </div>
             <Form className={styles.flexColDirection}>
@@ -392,7 +474,10 @@ export default function Entry() {
                 <Col>
                   <CustomInput
                     value={dosage}
-                    onChange={(event) => setDosage(event.target.value)}
+                    onChange={(event) => {
+                      setDosage(event.target.value);
+                      setWarning(true);
+                    }}
                     disabled={getMedicineLoading || medicineId !== null}
                     id="dosage"
                     type="number"
@@ -408,17 +493,31 @@ export default function Entry() {
                     type="number"
                     label="Quantidade"
                     placeholder="Digite a quantidade"
+                    showTip
+                    tip="Digite quantidade à ser adicionada"
                   />
                 </Col>
               </Row>
               <Row className={`${isMobile ? styles.mobileRow : ""}`}>
                 <Col>
-                  <CustomInput
+                  <CustomAutoComplete
                     value={batch}
-                    onChange={(event) => setBatch(event.target.value)}
                     id="batch"
                     label="Lote"
                     placeholder="Digite o lote do produto"
+                    allowCreation={false}
+                    disabled={getMedicineLoading}
+                    items={stockList.data as any}
+                    onSearchItem={(event) => {
+                      setBatch(event.target.value)
+                      setWarning(false);
+                    }}
+                    loadSearch={stockListLoading}
+                    onItemSelect={(item) => handleSelectBatch(item)}
+                    field="number"
+                    showError={warning}
+                    showTip={warning}
+                    tip="Selecione o lote do produto"
                   />
                 </Col>
                 <Col>
@@ -481,6 +580,7 @@ export default function Entry() {
                   headers={headers}
                   rows={medicinesList}
                   showOptions
+                  showProgress
                   isLoading={uploadMedicinesLoading}
                   onRemoveAction={handleRemoveMedicine}
                   onEditAction={handleEditMedicine}
@@ -500,7 +600,7 @@ export default function Entry() {
 
             <CustomModalNotification
               title="Medicamentos inseridos com sucesso!"
-              onHide={() => setShowSuccess(false)}
+              onHide={() => handleCloseSuccessModal()}
               show={showSuccess}
             />
 

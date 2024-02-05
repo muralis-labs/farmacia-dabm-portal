@@ -19,6 +19,9 @@ type CustomInputProps = {
   iconColor?: string;
   disabled?: boolean;
   search?: boolean;
+  showError?: boolean;
+  showTip?: boolean;
+  tip?: string;
 };
 
 export default function CustomInput({
@@ -36,11 +39,14 @@ export default function CustomInput({
   iconColor = colors.neutralColorGrayStrongest,
   disabled = false,
   search = false,
+  showError = false,
+  showTip = false,
+  tip = ''
 }: CustomInputProps) {
   return (
     <div className={styles.group}>
       {label && (
-        <FormLabel className={styles.label} htmlFor={id}>
+        <FormLabel className={`${styles.label} ${showError ? styles.errorLabel : ''}`} htmlFor={id}>
           {label}
         </FormLabel>
       )}
@@ -48,7 +54,7 @@ export default function CustomInput({
         <FormControl
           disabled={disabled}
           id={id}
-          className={`${styles.input} ${search ? styles.search : ''} shadow-none`}
+          className={`${styles.input} ${showError ? styles.errorSearch : ''} ${search ? styles.search : ''} shadow-none`}
           type={type}
           placeholder={placeholder}
           aria-label={placeholder}
@@ -61,6 +67,7 @@ export default function CustomInput({
         />
         {showIcon && <Icon icon={icon} size={iconSize} color={iconColor} />}
       </div>
+      {showTip && <label className={`${styles.tip} ${showError ? styles.errorLabel : ''}`}>{tip}</label>}
     </div>
   );
 }

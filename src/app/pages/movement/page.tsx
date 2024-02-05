@@ -502,11 +502,6 @@ export default function Page() {
         </div>
       ) : (
         <div>
-          {movementList.data && movementList.data.length > 0 && (
-            <div onScroll={handleScroll} className={styles.listContainer}>
-              {movementList.data.map((item) => renderMobileCard(item))}
-            </div>
-          )}
         </div>
       )}
     </>

@@ -9,6 +9,7 @@ type CustomAutoCompleteProps = {
   handleNewItem?: (newItem: any) => void;
   field: string;
   label?: string;
+  showError?: boolean;
   placeholder?: string;
   id: string;
   disabled?: boolean;
@@ -16,6 +17,8 @@ type CustomAutoCompleteProps = {
   allowCreation?: boolean;
   onSearchItem?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   loadSearch?: boolean;
+  tip?: string;
+  showTip?: boolean;
 };
 
 export default function CustomAutoComplete({
@@ -24,6 +27,7 @@ export default function CustomAutoComplete({
   handleNewItem = () => {},
   field,
   label,
+  showError,
   placeholder,
   id,
   disabled = false,
@@ -31,6 +35,8 @@ export default function CustomAutoComplete({
   allowCreation = true,
   onSearchItem = () => {},
   loadSearch = false,
+  tip = "",
+  showTip = false,
 }: CustomAutoCompleteProps) {
   const [showOptions, setShowOptions] = useState<boolean>(false);
   const [showCreateButton, setShowCreateButton] = useState<boolean>(false);
@@ -81,11 +87,10 @@ export default function CustomAutoComplete({
     };
   }, [handleClickOutside]);
 
-
   const memoizedItems = useMemo(() => {
-    const renderItems = (item: any) => (
+    const renderItems = (item: any, index: any) => (
       <div
-        key={item.id}
+        key={index}
         className={styles.item}
         onClick={() => handleItemClick(item)}
       >
@@ -99,26 +104,26 @@ export default function CustomAutoComplete({
           {!items || items.length <= 0 ? (
             <span className={styles.noItems}>Nenhum item foi encontrado</span>
           ) : (
-            items.map(renderItems)
-          )}
-          {showCreateButton && allowCreation && (
-            <div
-              className={`${styles.item} ${styles.newItem}`}
-              onClick={clickNew}
-            >
-              Criar novo
-            </div>
+            items.map((item, index) => renderItems(item, index))
           )}
         </>
       );
     } else {
       return <Spinner animation="border" role="status" />;
     }
-  }, [allowCreation, clickNew, field, handleItemClick, items, loadSearch, showCreateButton]);
+  }, [
+    allowCreation,
+    clickNew,
+    field,
+    handleItemClick,
+    items,
+    loadSearch,
+    showCreateButton,
+  ]);
 
   useEffect(() => {
-    setSearch(value)
-  }, [value])
+    setSearch(value);
+  }, [value]);
   return (
     <div
       className={styles.autocompleteContainer}
@@ -126,6 +131,7 @@ export default function CustomAutoComplete({
       ref={containerRef}
     >
       <CustomInput
+        showError={showError}
         disabled={disabled}
         value={search ?? value}
         onChange={(event) => handleSearch(event)}
@@ -135,6 +141,8 @@ export default function CustomAutoComplete({
         showIcon
         icon="arrow_down_bold"
         iconSize={12}
+        tip={tip}
+        showTip={showTip}
       />
 
       {showOptions && (

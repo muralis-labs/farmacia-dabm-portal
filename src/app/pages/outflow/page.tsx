@@ -96,7 +96,8 @@ export default function Page() {
   const [genericName, setGenericName] = useState<string>("");
   const [unitOfMeasurement, setUnitOfMeasurement] = useState<string>("");
   const [dosage, setDosage] = useState<number | undefined>(0);
-  const [quantity, setQuantity] = useState<number | undefined>(0);
+  const [batchQuantity, setBatchQuantity] = useState<number>(0);
+  const [quantity, setQuantity] = useState<number>(0);
   const [batch, setBatch] = useState<string>("");
   const [expiration, setExpiration] = useState<Date | undefined>(undefined);
   const [pharmaceutical, setPharmaceutical] = useState<string>("");
@@ -151,7 +152,7 @@ export default function Page() {
     setUnitOfMeasurement(unit?.name ?? "");
     setShelf(selectedBatch["name"]);
     setShelfId(selectedBatch["shelf_id"]);
-    setQuantity(selectedBatch["quantity"]);
+    setBatchQuantity(selectedBatch["quantity"]);
     setExpiration(new Date(selectedBatch["expiration"]));
   };
 
@@ -168,6 +169,7 @@ export default function Page() {
     setShelf("");
     setShelfId("");
     setQuantity(0);
+    setBatchQuantity(0);
     setExpiration(undefined);
   };
 
@@ -178,6 +180,8 @@ export default function Page() {
 
     if (existingMedicineIndex !== -1) {
       const updatedRows = [...rows];
+      const newQuantity = quantity - batchQuantity;
+
       updatedRows[existingMedicineIndex] = {
         ...updatedRows[existingMedicineIndex],
         commercialName,
@@ -191,7 +195,7 @@ export default function Page() {
         dosage,
         pharmaceutical,
         batch,
-        quantity: quantity ?? 0,
+        quantity: newQuantity,
         entry: new Date(),
       };
       setRows(updatedRows);
@@ -370,7 +374,7 @@ export default function Page() {
             className={`${styles.entryContainer} ${styles.flexColDirection}`}
           >
             <div className={styles.topInfo}>
-              <h2 className={styles.title}>Informações do Medicamento</h2>
+              <h2 className={`${styles.title} ${styles.danger}`}>Informações do Medicamento</h2>
               <div className={styles.divider} />
             </div>
             <Form className={styles.flexColDirection}>
@@ -451,6 +455,8 @@ export default function Page() {
                     type="number"
                     label="Quantidade"
                     placeholder="Digite a quantidade"
+                    showTip
+                    tip="Digite quantidade à ser removida"
                   />
                 </Col>
               </Row>

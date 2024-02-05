@@ -20,6 +20,7 @@ type CustomDataTableProps = {
   rows: any[];
   isLoading?: boolean;
   showOptions?: boolean;
+  showProgress?: boolean;
   selection?: boolean;
   selectionList?: any[];
   onSelectAllRows?: (e: any) => void;
@@ -33,6 +34,7 @@ const CustomDataTable: React.FC<CustomDataTableProps> = ({
   rows,
   isLoading = false,
   showOptions,
+  showProgress,
   selection = false,
   selectionList = [],
   onSelectAllRows = () => {},
@@ -58,18 +60,27 @@ const CustomDataTable: React.FC<CustomDataTableProps> = ({
     return (
       <div className={styles.iconContainer}>
         <Icon
-          icon={item[header.field] === "entry" ? "arrow_up" : item[header.field] === "discard" ? 'block' : "arrow_down"}
+          icon={
+            item[header.field] === "entry"
+              ? "arrow_up"
+              : item[header.field] === "discard"
+              ? "block"
+              : "arrow_down"
+          }
           size={20}
           color={
             item[header.field] === "entry"
               ? colors.feedbackColorSuccess
-              : item[header.field] === "discard" ?
-              colors.feedbackColorWarning
-              :
-              colors.feedbackColorDanger
+              : item[header.field] === "discard"
+              ? colors.feedbackColorWarning
+              : colors.feedbackColorDanger
           }
         />
-        {item[header.field] === "entry" ? "Entrada" : item[header.field] === "discard" ? 'Descarte' : "Saída"}
+        {item[header.field] === "entry"
+          ? "Entrada"
+          : item[header.field] === "discard"
+          ? "Descarte"
+          : "Saída"}
       </div>
     );
   };
@@ -90,8 +101,8 @@ const CustomDataTable: React.FC<CustomDataTableProps> = ({
           />
         </td>
       )}
-      {headers.map((header) => (
-        <td key={header.field}>
+      {headers.map((header, index) => (
+        <td key={index}>
           {validateCellType(getItemContent(header, item))
             ? formatDate(getItemContent(header, item))
             : header.showIcon
@@ -100,20 +111,38 @@ const CustomDataTable: React.FC<CustomDataTableProps> = ({
         </td>
       ))}
 
+      {showProgress && (
+        <>
+          {item.status === "done" ? (
+            <td>
+              <span className={styles.done}>Sucesso</span>
+            </td>
+          ) : item.status === "waiting" ? (
+            <td>
+              <span className={styles.waiting}>Aguardando</span>
+            </td>
+          ) : (
+            <td>
+              <span className={styles.pending}>Pendente</span>
+            </td>
+          )}
+        </>
+      )}
+
       {showOptions && (
         <td>
           <div className={styles.options}>
             {onRemoveAction && (
               <div
                 className={styles.option}
-                onClick={() => onRemoveAction(item)}
+                onClick={() => item.status !== 'done' && onRemoveAction(item)}
               >
                 <Icon icon="trash" size={12} />
               </div>
             )}
 
             {onEditAction && (
-              <div className={styles.option} onClick={() => onEditAction(item)}>
+              <div className={styles.option} onClick={() => item.status !== 'done' && onEditAction(item)}>
                 <Icon icon="pencil" size={12} />
               </div>
             )}
@@ -142,6 +171,7 @@ const CustomDataTable: React.FC<CustomDataTableProps> = ({
             </th>
           )}
           {formattedHeaders}
+          {showProgress && <th>Status</th>}
           {showOptions && <th>Ações</th>}
         </tr>
       </thead>

@@ -8,7 +8,7 @@ import CustomFooter from "./common/CustomFooter/index";
 import CustomHeader from "./common/CustomHeader/index";
 import CustomSideBar from "./common/CustomSideBar/index";
 import styles from "./index.module.scss";
-import { toast, ToastContainer } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -22,17 +22,17 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { push } = useRouter();
 
   const menus = useMemo(() => [
-    { name: "Dashboard", icon: "home", route: "/pages/dashboard" },
-    { name: "Estoque", icon: "bag", route: "/pages/stock" },
-    { name: "Movimentação", icon: "battery", route: "/pages/movement" },
-    { name: "Entrada", icon: "arrow_up", route: "/pages/entry" },
-    { name: "Saída", icon: "arrow_down", route: "/pages/outflow" },
-    { name: "Descarte", icon: "block", route: "/pages/discard" },
-    { name: "Calendário", icon: "calendar", route: "/pages/calendar" },
-    { name: "Perfil", icon: "", route: "/pages/user", hide: true },
+    { name: "Dashboard", title: 'Dashboard', icon: "home", route: "/pages/dashboard" },
+    { name: "Estoque",  title: 'Estoque', icon: "bag", route: "/pages/stock" },
+    { name: "Movimentação",  title: 'Movimentação', icon: "battery", route: "/pages/movement" },
+    { name: "Entrada",  title: 'Entrada de medicamentos', success: true, icon: "arrow_up", route: "/pages/entry" },
+    { name: "Saída",  title: 'Saída de medicamentos', danger: true, icon: "arrow_down", route: "/pages/outflow" },
+    { name: "Descarte",  title: 'Descarte de medicamentos', warning: true, icon: "block", route: "/pages/discard" },
+    { name: "Calendário",  title: 'Calendário de Vencimentos', icon: "calendar", route: "/pages/calendar" },
+    { name: "Perfil",  title: 'Perfil', icon: "", route: "/pages/user", hide: true },
   ], []);
 
-  const selectedPath = useMemo(() => menus.find(menu => menu.route === pathname || menu?.subMenuRoute === pathname), [menus, pathname]);
+  const selectedPath = useMemo(() => menus.find(menu => menu.route === pathname), [menus, pathname]);
 
   const mobileMenus = useMemo(() => [
     { name: "Dashboard", icon: "home", route: "/pages/dashboard" },

@@ -13,6 +13,10 @@ type CustomHeaderProps = {
     name: string;
     icon: string;
     route: string;
+    title: string;
+    danger?: boolean;
+    success?: boolean;
+    warning?: boolean;
   };
   isMobile: boolean;
   isScanning: boolean;
@@ -49,7 +53,15 @@ export default function CustomHeader({
           />
         )}
 
-        <h1 className={styles.title}>{selectedPath.name}</h1>
+        <h1
+          className={`${styles.title} ${
+            selectedPath.success ? styles.success : ""
+          } ${selectedPath.danger ? styles.danger : ""} ${
+            selectedPath.warning ? styles.warning : ""
+          }`}
+        >
+          {selectedPath.title}
+        </h1>
 
         {pathname.includes("/pages/stock") && isMobile ? (
           <div

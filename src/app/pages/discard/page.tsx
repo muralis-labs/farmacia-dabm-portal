@@ -13,7 +13,6 @@ import { UNIT_OF_MEASUREMENT } from "@/app/constants/selectors";
 import CustomDatePicker from "@/app/common/CustomDatePicker/index";
 import CustomButton from "@/app/common/CustomButton/index";
 import { useHandleGetStockList } from "@/app/hooks/useHandleGetStockList";
-import { useHandleUpdateStock } from "@/app/hooks/useHandleUpdateStock";
 import { useDeviceSelectors } from "react-device-detect";
 import Scan from "./components/Scan";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -371,7 +370,7 @@ export default function Page() {
             className={`${styles.entryContainer} ${styles.flexColDirection}`}
           >
             <div className={styles.topInfo}>
-              <h2 className={styles.title}>Informações do Medicamento</h2>
+              <h2 className={`${styles.title} ${styles.warning}`}>Informações do Medicamento</h2>
               <div className={styles.divider} />
             </div>
             <Form className={styles.flexColDirection}>
@@ -448,6 +447,7 @@ export default function Page() {
                   <CustomInput
                     value={quantity}
                     onChange={(event) => setQuantity(event.target.value)}
+                    disabled={true}
                     id="quantity"
                     type="number"
                     label="Quantidade"

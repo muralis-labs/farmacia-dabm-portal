@@ -306,7 +306,7 @@ export default function Page() {
   const handleScroll = (e) => {
     const bottom =
       Math.ceil(e.target.scrollHeight - e.target.scrollTop) ===
-      e.target.clientHeight;
+      e.target.clientHeight + 1;
 
     if (bottom && isMobile && limit < stockList.total) {
       getStockList({ limit: limit + 5, page: 1 });

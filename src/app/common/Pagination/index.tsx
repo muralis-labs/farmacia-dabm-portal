@@ -21,6 +21,7 @@ const Pagination: React.FC<PaginationProps> = ({
   onSelectPage = () => {},
   onChangeLimit = () => {},
 }) => {
+  // total = Number(total)
   const pageCount = Math.ceil(total / limit);
   const limitValues = [10, 20, 40, 80, 100];
 

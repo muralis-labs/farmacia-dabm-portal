@@ -20,7 +20,7 @@ export const useHandleConvertList = () => {
     setIsLoading(true);
     try {
       const user = localStorage.getItem(`user_${environment}`)
-        ? JSON.parse(localStorage.getItem(`user_${environment}`))
+        ? JSON.parse(localStorage.getItem(`user_${environment}`) as any)
         : undefined;
 
       if (!user) {

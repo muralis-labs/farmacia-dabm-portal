@@ -69,6 +69,7 @@
       line-height: 24px;
       letter-spacing: 0em;
       text-align: left;
+      min-width: 75px;
 
       &:first-child {
         border-radius: 8px 0 0px 0 !important;
@@ -130,4 +131,13 @@
   display: flex;
   gap: 8px;
   align-items: center;
+}
+
+.done {
+  color: $feedback-color-success;
+}
+
+.waiting,
+.pending {
+  color: $neutral-color-dark-strong;
 }

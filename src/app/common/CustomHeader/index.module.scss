@@ -104,3 +104,15 @@
 .hideHeader {
   display: none !important;
 }
+
+.danger {
+  color: $volcano-light !important;
+}
+
+.success {
+  color: $green-dark !important;
+}
+
+.warning {
+  color: $orange-dark !important;
+}

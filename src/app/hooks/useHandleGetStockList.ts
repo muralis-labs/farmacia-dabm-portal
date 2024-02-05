@@ -35,7 +35,7 @@ export const useHandleGetStockList = <T>({
     setIsLoading(true);
     try {
       const user = localStorage.getItem(`user_${environment}`)
-        ? JSON.parse(localStorage.getItem(`user_${environment}`))
+        ? JSON.parse(localStorage.getItem(`user_${environment}`) as any)
         : undefined;
 
       if (!user) {
@@ -117,7 +117,7 @@ export const useHandleGetStockList = <T>({
         setData({ data: list });
       } else {
         const list = res.data.data.filter((stock) => !stock.discarded && stock);
-        setData({ data: list } ?? []);
+        setData({ data: list, total: res.data.total } ?? []);
       }
       setIsLoading(false);
     } catch (error: any) {
