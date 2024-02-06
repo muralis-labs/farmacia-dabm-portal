@@ -1,0 +1,75 @@
+@import "@/app/sass/variables.scss";
+
+.group {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+
+  &:focus-within {
+    .label {
+      color: $brand-color-primary-medium;
+    }
+  }
+
+  &:focus {
+    border-color: $brand-color-primary-medium;
+  }
+}
+
+.search {
+  border: none !important;
+  border-radius: 24px !important;
+  background-color: $neutral-color-gray-light !important;
+}
+
+.label {
+  overflow: hidden;
+  color: $neutral-color-gray-strongest;
+  text-overflow: ellipsis;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 24px;
+  margin-bottom: unset !important;
+}
+
+.input {
+  padding: 8px;
+  font-size: $font-size-xs;
+  border-radius: 8px;
+  border: 1px solid $neutral-color-gray-strongest;
+  background: $neutral-color-gray-softest;
+}
+
+.errorSearch {
+  border: 1px solid $feedback-color-danger !important;
+}
+
+.errorLabel {
+  color: $feedback-color-danger !important;
+}
+
+.input::placeholder {
+  color: $neutral-color-gray-medium;
+}
+
+.inputContainer {
+  display: flex;
+  align-items: center;
+  position: relative;
+
+  svg {
+    position: absolute;
+    right: 16px;
+  }
+}
+
+.tip {
+  font-family: Roboto;
+  font-size: 10px;
+  font-weight: 400;
+  line-height: 16px;
+  letter-spacing: 0em;
+  text-align: left;
+  color: $neutral-color-gray-strongest;
+}

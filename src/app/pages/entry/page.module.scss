@@ -1,0 +1,98 @@
+@import "@/app/sass/variables";
+
+.entry {
+  padding: 48px;
+  overflow: auto;
+  height: 90%;
+
+  &.mobile {
+    padding: 24px 24px 0 24px !important;
+    height: 100%;
+    overflow-y: auto;
+
+    &.mobileScan {
+      padding: 0 !important;
+      overflow-y: hidden;
+    }
+
+    .divider {
+      margin-bottom: 0px !important;
+    }
+
+    .entryContainer {
+      margin-bottom: 72px;
+    }
+  }
+  .col {
+    display: flex;
+    flex-direction: column-reverse;
+  }
+}
+
+.mt {
+  margin-top: 16px;
+}
+
+.entryContainer {
+  padding: 16px;
+  border-radius: 24px;
+  border: 1px solid $neutral-color-gray-medium;
+  background-color: $neutral-color-gray-softest;
+}
+
+.flexColDirection {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.title {
+  color: $brand-color-primary-medium;
+  font-weight: $font-weight-medium;
+  font-size: $font-size-md;
+}
+
+.green {
+  color: $green-dark;
+}
+
+.divider {
+  height: 1px;
+  width: 100%;
+  margin-bottom: 24px;
+  background: linear-gradient(
+    90deg,
+    rgba(182, 199, 212, 0) 0%,
+    #b6c7d4 49.52%,
+    rgba(182, 199, 212, 0.15625) 99.04%
+  );
+}
+
+.topInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.options {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.mobileRow {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.mobileOptions {
+  height: 72px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: $neutral-color-gray-softest;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  padding: 20px;
+  z-index: 2;
+}

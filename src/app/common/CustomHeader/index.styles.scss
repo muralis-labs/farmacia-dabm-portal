@@ -1,0 +1,5 @@
+@import "@/app/sass/variables.scss";
+.nav {
+    color: $brand-color-primary-medium !important;
+    --bs-nav-underline-link-active-color: $brand-color-primary-medium !important;
+}

@@ -1,0 +1,168 @@
+@import "@/app/sass/variables.scss";
+
+.main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  &.mainMobile {
+    background-color: #bfdbf7;
+    position: relative;
+    overflow: hidden;
+  }
+}
+
+.bubbleTop {
+  top: -67px;
+  right: -75px;
+  position: absolute;
+  border-radius: 50%;
+  width: 199px;
+  height: 199px;
+  background: linear-gradient(
+      52.7deg,
+      rgba(255, 255, 255, 0.4) 14.93%,
+      rgba(255, 255, 255, 0) 104.86%
+    ),
+    radial-gradient(
+      46.73% 46.73% at 3.27% 61.81%,
+      #ffffff 0%,
+      rgba(255, 255, 255, 0) 100%
+    );
+}
+
+.bubbleBottom {
+  bottom: -67px;
+  left: -75px;
+  position: absolute;
+  border-radius: 50%;
+  width: 199px;
+  height: 199px;
+  background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.4) 0%,
+      rgba(255, 255, 255, 0) 100%
+    ),
+    radial-gradient(
+      95.97% 95.97% at 71.33% 4.03%,
+      #ffffff 0%,
+      rgba(255, 255, 255, 0) 100%
+    );
+}
+
+.centerInfo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login {
+  width: 50%;
+  height: 100vh;
+  padding: 0 70px;
+
+  &.mobile {
+    width: 100% !important;
+    padding: 0 !important;
+
+    .loginForm {
+      width: 320px !important;
+    }
+  }
+
+  .loginForm {
+    width: 320px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+  }
+
+  .loginTitle {
+    color: $neutral-color-dark-strongest;
+    font-weight: $font-weight-medium;
+    font-size: $font-size-xl;
+  }
+
+  .formImage {
+    background-color: $neutral-color-gray-softest;
+    width: 123px;
+    height: 119px;
+    border-radius: 24px;
+    box-shadow: -20px 40px 100px 0px #585c620a;
+    box-shadow: -15px 40px 100px 0px #4200ff14;
+  }
+
+  .options {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .link {
+    text-decoration: none;
+    &:visited {
+      text-decoration: none;
+    }
+    &:hover {
+      text-decoration: none;
+    }
+    &:active {
+      text-decoration: none;
+    }
+    cursor: pointer;
+    color: $brand-color-primary-dark;
+
+    &:hover {
+      color: $brand-color-primary-darkest;
+    }
+
+    &:active {
+      color: $brand-color-primary-dark-active;
+    }
+  }
+}
+
+.banner {
+  width: 50%;
+  height: 100vh;
+  background-color: $brand-color-primary-dark;
+  flex-direction: column;
+  gap: 40px;
+
+  .bannerText {
+    font-size: $font-size-xl;
+    color: $neutral-color-gray-softest;
+  }
+
+  .biggerCircle {
+    width: 580px;
+    height: 580px;
+    padding: 10px;
+    border-radius: 580px;
+    background: linear-gradient(
+      198deg,
+      rgba(255, 255, 255, 0.4) 12.51%,
+      rgba(255, 255, 255, 0) 88.73%
+    );
+
+    .smallerCircle {
+      position: absolute;
+      width: 489px;
+      height: 489px;
+      border-radius: 489px;
+      background: linear-gradient(
+        198deg,
+        rgba(255, 255, 255, 0.4) 12.51%,
+        rgba(255, 255, 255, 0) 88.73%
+      );
+
+      .image {
+        position: relative;
+      }
+    }
+  }
+}

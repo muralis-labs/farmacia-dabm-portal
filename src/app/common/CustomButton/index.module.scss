@@ -1,0 +1,94 @@
+@import "@/app/sass/variables.scss";
+
+.customButton {
+  width: 280px;
+  height: 40px;
+  border-color: $brand-color-primary-dark;
+  background-color: $brand-color-primary-dark;
+
+  &.largeButton {
+    height: 44px !important;
+  }
+
+  &.fullWidth {
+    width: 100% !important;
+  }
+
+  &:hover {
+    border-color: $brand-color-primary-darkest;
+    background-color: $brand-color-primary-darkest;
+  }
+
+  &:active {
+    border-color: $brand-color-primary-dark-active;
+    background-color: $brand-color-primary-dark-active;
+  }
+
+  &.danger {
+    border-color: $volcano-light;
+    background-color: $volcano-light;
+
+    &:hover {
+      border-color: $volcano-strong;
+      background-color: $volcano-strong;
+    }
+
+    &:active {
+      border-color: $volcano-strongest;
+      background-color: $volcano-strongest;
+    }
+  }
+
+  &.warning {
+    border-color: $orange-dark;
+    background-color: $orange-dark;
+
+    &:hover {
+      border-color: $orange-darkest;
+      background-color: $orange-darkest;
+    }
+
+    &:active {
+      border-color: $orange-darkest-active;
+      background-color: $orange-darkest-active;
+    }
+  }
+
+  &.success {
+    border-color: $green-dark;
+    background-color: $green-dark;
+
+    &:hover {
+      border-color: $green-darkest;
+      background-color: $green-darkest;
+    }
+
+    &:active {
+      border-color: $green-darkest-active;
+      background-color: $green-darkest-active;
+    }
+  }
+
+  &.onlyText {
+    border: unset;
+    color: $brand-color-primary-darkest !important;
+    border-color: unset !important;
+    background-color: unset !important;
+
+    &:hover {
+      border-color: unset !important;
+      background-color: unset !important;
+    }
+
+    &:active {
+      border-color: unset !important;
+      background-color: unset !important;
+    }
+  }
+
+  &:disabled {
+    color: $neutral-color-gray-strong !important;
+    border-color: $neutral-color-gray-soft !important;
+    background-color: $neutral-color-gray-soft !important;
+  }
+}

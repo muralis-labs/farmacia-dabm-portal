@@ -1,0 +1,15 @@
+.mainContainer {
+    width: 100%;
+    height: 100%;
+    display: flex;
+}
+
+.safeArea {
+    width: 100%;
+    height: 100%;
+    padding: 24px;
+
+    &.removePadding {
+        padding: 0 !important;
+    }
+}

@@ -1,0 +1,576 @@
+@import "@/app/sass/variables.scss";
+
+.page {
+  display: flex;
+  gap: 16px;
+  height: 82vh;
+  overflow-y: auto;
+  margin-top: 16px;
+
+  &.mobilePage {
+    height: fit-content;
+    margin: 16px;
+
+    .medicineInfo {
+      width: 100% !important;
+    }
+
+    .left {
+      width: 100% !important;
+      padding: 0 0 120px 0;
+
+      .expirations {
+        height: 182px !important;
+      }
+
+      .text {
+        width: 100% !important;
+
+        .information {
+          font-size: 18px !important;
+          font-weight: 500 !important;
+          line-height: 27px !important;
+          letter-spacing: 0em !important;
+          text-align: left !important;
+        }
+
+        .total {
+          font-size: 64px !important;
+          font-weight: 400 !important;
+          line-height: 64px !important;
+          letter-spacing: 0em !important;
+          text-align: left !important;
+        }
+
+        .medicines_label {
+          font-size: 12px !important;
+          font-weight: 400 !important;
+          line-height: 12px !important;
+          letter-spacing: 0em !important;
+          text-align: left !important;
+        }
+      }
+
+      .calendar_illustration {
+        position: absolute;
+        width: 105px;
+        height: 90px;
+        right: 15%;
+        bottom: 10%;
+      }
+
+      .routes {
+        overflow-x: auto;
+        width: 100% !important;
+        gap: 24px !important;
+        display: inline;
+        white-space: nowrap;
+
+        .route {
+          width: 112px !important;
+          height: 110px !important;
+          margin-right: 24px;
+          display: inline-block;
+          vertical-align: top;
+
+          .routeInfo {
+            width: 100% !important;
+            display: flex !important;
+            flex-direction: column !important;
+          }
+        }
+      }
+    }
+  }
+
+  .mobileSidebar {
+    padding: 16px !important;
+    margin-bottom: 50px;
+    gap: 16px;
+  }
+}
+
+.left {
+  width: 75%;
+  height: 100%;
+  display: grid;
+  flex-direction: column;
+  gap: 24px;
+
+  .expirations {
+    position: relative;
+    width: 100%;
+    height: 200px;
+
+    .view {
+      position: absolute;
+      z-index: 1;
+      padding: 24px;
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: center;
+      width: 100%;
+
+      .text {
+        width: 70%;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        color: $neutral-color-gray-softest;
+
+        .information {
+          font-size: 24px;
+          font-weight: 300;
+          line-height: 32px;
+          letter-spacing: 0em;
+          text-align: left;
+        }
+
+        .total {
+          font-size: 64px;
+          font-weight: 400;
+          line-height: 64px;
+          letter-spacing: 0em;
+          text-align: left;
+        }
+
+        .medicines_label {
+          font-size: 20px;
+          font-weight: 400;
+          line-height: 20px;
+          letter-spacing: 0em;
+          text-align: left;
+        }
+      }
+    }
+
+    .background {
+      color: transparent;
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 24px;
+      object-fit: fill;
+    }
+  }
+
+  .table {
+    padding: 24px 8px;
+    margin: 0 !important;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    background-color: $neutral-color-gray-softest;
+    align-items: center;
+    border-radius: 16px;
+    box-shadow: 0px 35px 40px 0px #0000001a;
+
+    .CustomDataTable_table__rFeE5 {
+      box-shadow: none !important;
+    }
+
+    .CustomDataTable_info___UnH7 {
+      border: unset !important;
+    }
+    .title {
+      font-size: 20px;
+      font-weight: 400;
+      line-height: 32px;
+      letter-spacing: 0em;
+      text-align: left;
+      align-self: self-start;
+      color: $neutral-color-dark-medium;
+    }
+  }
+}
+
+.routes {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .route {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    width: 30%;
+    padding: 24px 16px;
+    border-radius: 16px;
+    background-color: $neutral-color-gray-softest;
+    box-shadow: 0px 35px 40px 0px #0000001a;
+    justify-content: space-between;
+
+    .routeInfo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      .routeName {
+        font-size: 18px;
+        font-weight: 500;
+        line-height: 27px;
+        letter-spacing: 0em;
+        text-align: left;
+      }
+    }
+
+    .routeButton {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background-color: $brand-color-primary-darkest;
+      color: $neutral-color-gray-softest;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+}
+
+.sidebar {
+  width: 368px;
+  height: 100%;
+  background-color: $neutral-color-gray-softest;
+  padding: 40px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  align-items: center;
+  border-radius: 16px;
+  box-shadow: 0px 35px 40px 0px #0000001a;
+
+  .title {
+    font-size: 24px;
+    font-weight: 500;
+    line-height: 32px;
+    letter-spacing: 0em;
+    text-align: center;
+    color: $neutral-color-dark-medium;
+
+    .selectedDate {
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 24px;
+      letter-spacing: 0em;
+      text-align: center;
+    }
+  }
+
+  .circleBigger {
+    width: 96px;
+    height: 96px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 56px;
+    background-color: $variant-rose-light;
+
+    .circleSmaller {
+      width: 64px;
+      height: 64px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 56px;
+      background-color: $variant-rose-medium;
+      color: $volcano-light;
+    }
+  }
+
+  .info {
+    font-size: 40px;
+    font-weight: 700;
+    line-height: 48px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: $neutral-color-dark-strong;
+  }
+
+  .text {
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 27px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: $neutral-color-dark-strong;
+  }
+
+  .selector {
+    width: 100%;
+    display: flex;
+    overflow-x: auto;
+    gap: 16px;
+
+    .daySelector {
+      width: 38px !important;
+      height: 67px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      border-radius: 500px;
+      padding: 6px 8px;
+
+      align-items: center;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 24px;
+      letter-spacing: 0em;
+      text-align: center;
+      color: $neutral-color-dark-medium;
+
+      &.selected {
+        background-color: $brand-color-primary-medium !important;
+        color: $neutral-color-gray-softest !important;
+
+        span.dayNumber {
+          background-color: $neutral-color-gray-softest;
+          color: $neutral-color-dark-medium !important;
+        }
+      }
+
+      span.dayNumber {
+        width: 22px;
+        height: 24px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 50%;
+      }
+    }
+  }
+}
+
+.medicines {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  height: 35%;
+  overflow-y: auto;
+
+  &.mobile {
+    gap: 16px;
+  }
+
+  .medicine {
+    width: 100%;
+    display: flex;
+    padding: 16px;
+    gap: 16px;
+
+    &.mobile {
+      background-color: $neutral-color-gray-softest;
+      border-radius: 16px;
+    }
+
+    .divider {
+      height: 100%;
+      width: 1px;
+      background: linear-gradient(
+        180deg,
+        rgba(182, 199, 213, 0) 0%,
+        #b6c7d5 50.41%,
+        rgba(182, 199, 213, 0) 100%
+      );
+    }
+
+    .total {
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 18px;
+      font-weight: 500;
+      line-height: 27px;
+      letter-spacing: 0em;
+      text-align: center;
+      color: $neutral-color-dark-medium;
+    }
+
+    .medicineInfo {
+      width: 60%;
+      display: flex;
+      flex-direction: column;
+
+      .top {
+        font-size: 18px;
+        font-weight: 500;
+        line-height: 27px;
+        letter-spacing: 0em;
+        text-align: left;
+        color: $neutral-color-dark-medium;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .bottom {
+        display: flex;
+        gap: 8px;
+
+        .itemInfo {
+          svg {
+            color: $brand-color-primary-medium;
+          }
+
+          font-size: 10px;
+          font-weight: 400;
+          line-height: 16px;
+          letter-spacing: 0em;
+          text-align: center;
+          color: $neutral-color-dark-medium;
+          display: flex;
+          align-items: center;
+          gap: 4px;
+        }
+      }
+    }
+  }
+}
+
+.pillContainer {
+  width: 40px;
+  height: 40px;
+  padding: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 12px;
+  background-color: $brand-color-primary-darkest;
+  color: $neutral-color-gray-softest;
+}
+
+.expiratedMedicines {
+  width: 100%;
+  height: 243px;
+  border-radius: 24px;
+  padding: 16px 0;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  flex-direction: column;
+  background-color: $neutral-color-gray-softcare;
+  gap: 4px;
+}
+
+.mobileCalendarContainer {
+  width: 100% !important;
+  height: 359px !important;
+  border: unset !important;
+  border-radius: 24px !important;
+  background-color: $neutral-color-gray-softcare !important;
+
+  .header {
+    display: flex;
+    margin-bottom: 16px;
+    display: flex;
+    justify-content: space-between;
+    color: $brand-color-primary-medium;
+    border-radius: 24px 24px 0 0 !important;
+    padding: 16px;
+  }
+
+  .react-datepicker__header {
+    border-radius: 24px 24px 0 0 !important;
+    background-color: $neutral-color-gray-softcare !important;
+  }
+
+  .react-datepicker__month-container {
+    width: 100% !important;
+  }
+
+  .react-datepicker__day-name,
+  .react-datepicker__day,
+  .react-datepicker__time-name {
+    width: 12% !important;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 24px;
+    letter-spacing: 0em;
+    text-align: center;
+  }
+
+  .react-datepicker__day--outside-month {
+    color: $neutral-color-gray-light !important;
+  }
+}
+
+.date {
+  font-size: 18px !important;
+  font-weight: 500 !important;
+  line-height: 27px;
+  letter-spacing: 0em;
+  text-align: left;
+}
+
+.react-datepicker__header {
+  border-bottom: unset !important;
+}
+
+.mobileTitle {
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 32px !important;
+  letter-spacing: 0em !important;
+  text-align: left !important;
+  align-self: flex-start !important;
+}
+
+.notFoundContainer {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  height: 75vh;
+  padding: 16px;
+  gap: 16px;
+
+  .notFoundText {
+    font-size: $font-size-md;
+    font-weight: $font-weight-medium;
+    line-height: 27px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: $brand-color-primary-darkest;
+  }
+
+  .notFoundSubtitle {
+    font-size: $font-size-xs;
+    font-weight: $font-weight-regular;
+    line-height: 24px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: $neutral-color-gray-strongest;
+  }
+}
+
+.topTitle {
+  width: 90%;
+  overflow-x: auto;
+}
+
+.movement_type {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px;
+  border-radius: 24px;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 12px;
+  letter-spacing: 0em;
+  text-align: left;
+  color: #6652cd;
+  background: #f1f0ff;
+}
+
+.actions {
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 32px;
+  letter-spacing: 0em;
+  text-align: left;
+  color: $neutral-color-dark-medium;
+  margin-bottom: 8px;
+}

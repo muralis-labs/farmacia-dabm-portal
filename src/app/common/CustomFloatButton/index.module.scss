@@ -1,0 +1,24 @@
+@import "@/app/sass/variables.scss";
+
+
+.floatButton {
+    width: 64px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    bottom: 24px;
+    right: 24px;
+    border-radius: 50%;
+    background-color: $brand-color-primary-darkest;
+    cursor: pointer;
+
+    &:hover {
+        background-color: $brand-color-primary-dark-active;
+    } 
+
+    &.mobileButton {
+        bottom: 64px !important;
+    }
+}

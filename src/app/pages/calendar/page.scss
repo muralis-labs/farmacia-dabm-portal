@@ -1,0 +1,443 @@
+@import "@/app/sass/variables.scss";
+
+.page {
+  display: flex;
+  gap: 16px;
+  height: 86vh;
+  overflow-y: auto;
+
+  &.mobilePage {
+    height: fit-content;
+    margin: 16px;
+  }
+
+  .date {
+    font-size: 18px !important;
+    font-weight: 500 !important;
+    line-height: 27px;
+    letter-spacing: 0em;
+    text-align: left;
+  }
+
+  .react-datepicker__header {
+    border-bottom: unset !important;
+  }
+
+  .mobileTitle {
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 32px !important;
+    letter-spacing: 0em !important;
+    text-align: left !important;
+    align-self: flex-start !important;
+  }
+
+  .mobileSidebar {
+    padding: 16px !important;
+    margin-bottom: 75px;
+    gap: 16px;
+  }
+
+  .mobileCalendarContainer {
+    width: 100% !important;
+    height: 359px !important;
+    border: unset !important;
+    border-radius: 24px !important;
+    background-color: $neutral-color-gray-softcare !important;
+
+    .header {
+      display: flex;
+      margin-bottom: 16px;
+      display: flex;
+      justify-content: space-between;
+      color: $brand-color-primary-medium;
+      border-radius: 24px 24px 0 0 !important;
+      padding: 16px;
+    }
+
+    .react-datepicker__header {
+      border-radius: 24px 24px 0 0 !important;
+      background-color: $neutral-color-gray-softcare !important;
+    }
+
+    .react-datepicker__month-container {
+      width: 100% !important;
+    }
+
+    .react-datepicker__day-name,
+    .react-datepicker__day,
+    .react-datepicker__time-name {
+      width: 12% !important;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 24px;
+      letter-spacing: 0em;
+      text-align: center;
+    }
+
+    .react-datepicker__day--outside-month {
+      color: $neutral-color-gray-light !important;
+    }
+  }
+}
+.sidebar {
+  width: 368px;
+  height: 100%;
+  background-color: #fff;
+  padding: 40px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  align-items: center;
+  border-radius: 16px;
+  box-shadow: 0px 35px 40px 0px #0000001a;
+
+  .title {
+    font-size: 24px;
+    font-weight: 500;
+    line-height: 32px;
+    letter-spacing: 0em;
+    text-align: center;
+    color: $neutral-color-dark-medium;
+
+    .selectedDate {
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 24px;
+      letter-spacing: 0em;
+      text-align: center;
+    }
+  }
+
+  .medicines {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    height: 35%;
+    overflow-y: auto;
+
+    .medicine {
+      width: 100%;
+      display: flex;
+      padding: 16px;
+      gap: 16px;
+
+      .divider {
+        height: 100%;
+        width: 1px;
+        background: linear-gradient(
+          180deg,
+          rgba(182, 199, 213, 0) 0%,
+          #b6c7d5 50.41%,
+          rgba(182, 199, 213, 0) 100%
+        );
+      }
+
+      .total {
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 18px;
+        font-weight: 500;
+        line-height: 27px;
+        letter-spacing: 0em;
+        text-align: center;
+        color: $neutral-color-dark-medium;
+      }
+
+      .medicineInfo {
+        width: 60%;
+        display: flex;
+        flex-direction: column;
+
+        .top {
+          font-size: 18px;
+          font-weight: 500;
+          line-height: 27px;
+          letter-spacing: 0em;
+          text-align: left;
+          color: $neutral-color-dark-medium;
+        }
+
+        .bottom {
+          display: flex;
+          gap: 8px;
+
+          .itemInfo {
+            svg {
+              color: $brand-color-primary-medium;
+            }
+
+            font-size: 10px;
+            font-weight: 400;
+            line-height: 16px;
+            letter-spacing: 0em;
+            text-align: center;
+            color: $neutral-color-dark-medium;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+          }
+        }
+      }
+    }
+  }
+
+  .pillContainer {
+    width: 40px;
+    height: 40px;
+    padding: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 12px;
+    background-color: $brand-color-primary-darkest;
+    color: $neutral-color-gray-softest;
+  }
+
+  .expiratedMedicines {
+    width: 100%;
+    height: 243px;
+    border-radius: 24px;
+    padding: 16px 0;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+    background-color: $neutral-color-gray-softcare;
+    gap: 4px;
+  }
+
+  .circleBigger {
+    width: 96px;
+    height: 96px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 56px;
+    background-color: $variant-rose-light;
+
+    .circleSmaller {
+      width: 64px;
+      height: 64px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 56px;
+      background-color: $variant-rose-medium;
+      color: $volcano-light;
+    }
+  }
+
+  .info {
+    font-size: 40px;
+    font-weight: 700;
+    line-height: 48px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: $neutral-color-dark-strong;
+  }
+
+  .text {
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 27px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: $neutral-color-dark-strong;
+  }
+
+  .selector {
+    width: 100%;
+    display: flex;
+    overflow-x: auto;
+    gap: 16px;
+
+    .daySelector {
+      width: 38px !important;
+      height: 67px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      border-radius: 500px;
+      padding: 6px 8px;
+
+      align-items: center;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 24px;
+      letter-spacing: 0em;
+      text-align: center;
+      color: $neutral-color-dark-medium;
+
+      &.selected {
+        background-color: $brand-color-primary-medium !important;
+        color: $neutral-color-gray-softest !important;
+
+        span.dayNumber {
+          background-color: $neutral-color-gray-softest;
+          color: $neutral-color-dark-medium !important;
+        }
+      }
+
+      span.dayNumber {
+        width: 22px;
+        height: 24px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 50%;
+      }
+    }
+  }
+}
+
+.calendarContainer {
+  width: 100%;
+  border: unset !important;
+  border-radius: 24px !important;
+  box-shadow: 0px 35px 40px 0px rgba(0, 0, 0, 0.1);
+
+  .header {
+    display: flex;
+    margin-bottom: 32px;
+    align-items: center;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 29px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: $neutral-color-dark-strong;
+  }
+
+  .react-datepicker__month-container {
+    width: 100% !important;
+  }
+
+  .react-datepicker__day--outside-month {
+    background-color: $neutral-color-gray-softest !important;
+    color: $neutral-color-gray-softest !important;
+    height: 100% !important;
+    border: unset !important;
+
+    .dayLabel,
+    .info {
+      display: none !important;
+    }
+  }
+
+  .dayContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+
+    .dayLabel {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      font-size: 24px;
+      font-weight: 500;
+      line-height: 32px;
+      letter-spacing: 0em;
+      text-align: left;
+      color: $neutral-color-gray-strongest;
+    }
+
+    .divider {
+      height: 23px;
+    }
+
+    .info {
+      width: 44px;
+      height: 23px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      justify-content: center;
+      border-radius: 4px;
+      padding: 3px;
+      background-color: $volcano-soft;
+
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 17px;
+      letter-spacing: 0em;
+      text-align: left;
+      color: $volcano-strong;
+    }
+  }
+
+  .react-datepicker__month-container {
+    padding: 24px;
+  }
+
+  .react-datepicker__header.react-datepicker__header--custom {
+    background-color: $neutral-color-gray-softest;
+    border: unset;
+  }
+
+  .react-datepicker__day-name,
+  .react-datepicker__day {
+    width: 14% !important;
+    text-align: center !important;
+  }
+
+  .react-datepicker__day-name {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 24px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: $neutral-color-gray-strongest;
+  }
+
+  .react-datepicker__day {
+    height: 107px;
+    padding: 24px 16px;
+    margin: 0px !important;
+    display: inline-grid;
+    align-items: center;
+    border-radius: 0;
+    border: 1px solid $neutral-color-gray-softcare;
+  }
+
+  .react-datepicker__day--selected {
+    background-color: unset;
+    color: $neutral-color-gray-strongest;
+    border: 2px solid $brand-color-primary-medium;
+    border-radius: 8px;
+
+    &:hover,
+    &:active {
+      background-color: unset;
+      color: $neutral-color-gray-strongest;
+      border: 2px solid $brand-color-primary-medium;
+      border-radius: 8px;
+    }
+  }
+}
+
+.loadingCalendar {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #fff;
+  border-radius: 16px;
+  box-shadow: 0px 35px 40px 0px #0000001a;
+
+  .spinner-border {
+    width: 120px;
+    height: 120px;
+    --bs-spinner-border-width: 0.50em;
+  }
+}
+
+.CustomModalNotification_modalOptions__Y_ydZ {
+  display: flex;
+  margin-top: 20px;
+  justify-content: flex-end;
+}

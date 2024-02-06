@@ -1,0 +1,118 @@
+@import "@/app/sass/variables.scss";
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  height: 72px;
+  padding: 24px 16px 0 16px;
+  align-items: center;
+  margin-bottom: 8px;
+
+  .title {
+    font-size: $font-size-xxl;
+    font-weight: $font-weight-medium;
+    color: $neutral-color-dark-medium;
+    line-height: 48px;
+    letter-spacing: 0em;
+    text-align: left;
+  }
+
+  .user {
+    display: flex;
+    align-items: center;
+    padding: 8px 16px;
+    gap: 8px;
+    border: 1px solid $neutral-color-gray-light;
+    border-radius: 16px;
+    cursor: pointer;
+
+    &.selected {
+      background-color: $hand-off-frame-base;
+      border: unset !important;
+    }
+
+    font-size: $font-size-xxs;
+    font-weight: $font-weight-regular;
+    line-height: 12px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: $neutral-color-gray-strongest;
+
+    .formImage {
+      height: 32px;
+      width: 32px;
+      border-radius: 50%;
+      object-fit: contain;
+    }
+  }
+}
+
+.navOptions {
+  gap: 48px;
+
+  &.mobileNav {
+    width: 100%;
+    display: flex;
+    gap: 0;
+    justify-content: space-between;
+  }
+
+  a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 16px 24px;
+    margin-bottom: 16px;
+    width: 180px;
+
+    color: $neutral-color-gray-strongest;
+  }
+}
+
+.mobileHeader {
+  height: 64px;
+
+  div {
+    width: 50px;
+  }
+
+  .filterButton {
+    display: flex;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  .title {
+    font-size: $font-size-xs;
+    font-weight: $font-weight-medium;
+    line-height: 24px;
+    letter-spacing: 0em;
+    text-align: center;
+  }
+
+  .user {
+    border: unset !important;
+    background-color: unset !important;
+  }
+
+  a {
+    margin-bottom: 8px;
+  }
+}
+
+.hideHeader {
+  display: none !important;
+}
+
+.danger {
+  color: $volcano-light !important;
+}
+
+.success {
+  color: $green-dark !important;
+}
+
+.warning {
+  color: $orange-dark !important;
+}
