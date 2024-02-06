@@ -63,7 +63,8 @@ export const useHandleListMedicines = <T>() => {
       }
       setIsLoading(false);
     } catch (error: any) {
-      if (error?.response?.status === 401 || error?.code === "ERR_NETWORK") {
+       if (error?.response?.status === 401 || error?.code === "ERR_NETWORK") {
+        localStorage.removeItem(`user_${environment}`);
         push("/");
       }
       setError(error);

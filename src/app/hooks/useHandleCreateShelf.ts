@@ -35,6 +35,7 @@ export const useHandleCreateShelf = <T>() => {
       return res.data.data;
     } catch (error: any) {
       if (error?.response?.status === 401 || error?.code === "ERR_NETWORK") {
+        localStorage.removeItem(`user_${environment}`);
         push("/");
       }
       setError(error);

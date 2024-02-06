@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { environment } from "@/app/constants/config";
 import styles from "./page.module.scss";
 import colors from "@/app/sass/_variables.module.scss";
@@ -23,8 +23,8 @@ export default function User() {
 
   const [edit, setEdit] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean>(false);
-  const [name, setName] = useState<string>(user.name);
-  const [email, setEmail] = useState<string>(user.login);
+  const [name, setName] = useState<string>(user?.name);
+  const [email, setEmail] = useState<string>(user?.login);
   const [password, setPassword] = useState<string>("");
   const [selectors] = useDeviceSelectors(window.navigator.userAgent);
   const { isMobile } = selectors;
@@ -69,6 +69,12 @@ export default function User() {
       refresh();
     }
   };
+
+  useEffect(() => {
+    if(!user) {
+      handleExitUser();
+    }
+  }, [])
 
   return (
     <div className={styles.page}>

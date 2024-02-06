@@ -50,7 +50,8 @@ export const useHandleUploadMedicines = <T>() => {
       }
       setIsLoading(false);
     } catch (error: any) {
-      if (error?.response?.status === 401 || error?.code === "ERR_NETWORK") {
+       if (error?.response?.status === 401 || error?.code === "ERR_NETWORK") {
+        localStorage.removeItem(`user_${environment}`);
         push("/");
       }
       toast.error(error.response.data[0]);
