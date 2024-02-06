@@ -95,7 +95,7 @@ export const useHandleGetCalendarList = <T>({
       }
       setIsLoading(false);
     } catch (error: any) {
-      if (error?.response?.status === 401) {
+      if (error?.response?.status === 401 || error?.code === "ERR_NETWORK") {
         push("/");
       }
       setError(error);

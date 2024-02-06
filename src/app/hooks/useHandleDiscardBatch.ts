@@ -55,9 +55,12 @@ export const useHandleDiscardBatch = () => {
 
       setIsLoading(false);
     } catch (error: any) {
+      if (error?.response?.status === 401 || error?.code === "ERR_NETWORK") {
+        redirect("/");
+      }
       setError(error);
-      setIsLoading(false);
     }
+    setIsLoading(false);
   };
 
   return { isLoading, error, fetchData };

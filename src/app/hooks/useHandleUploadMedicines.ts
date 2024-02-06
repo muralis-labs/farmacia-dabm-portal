@@ -3,6 +3,7 @@ import { BaseURL, environment } from "../constants/config";
 import { useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 export const useHandleUploadMedicines = <T>() => {
   const [isLoading, setIsLoading] = useState(false);
@@ -49,6 +50,10 @@ export const useHandleUploadMedicines = <T>() => {
       }
       setIsLoading(false);
     } catch (error: any) {
+      if (error?.response?.status === 401 || error?.code === "ERR_NETWORK") {
+        push("/");
+      }
+      toast.error(error.response.data[0]);
       setError(error);
     }
     setIsLoading(false);
